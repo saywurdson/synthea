@@ -147,10 +147,17 @@
         }
       ],
       "prescription": {
-        "as_needed": true,
+        "refills": 11,
+        "as_needed": false,
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
         "duration": {
-            "quantity": 30,
-            "unit": "days"
+          "quantity": 30,
+          "unit": "days"
         }
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal",
@@ -186,10 +193,17 @@
         }
       ],
       "prescription": {
+        "refills": 11,
         "as_needed": true,
+        "dosage": {
+          "amount": 1,
+          "frequency": 5,
+          "period": 1,
+          "unit": "days"
+        },
         "duration": {
-            "quantity": 30,
-            "unit": "days"
+          "quantity": 30,
+          "unit": "days"
         }
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal",
@@ -207,10 +221,17 @@
         }
       ],
       "prescription": {
+        "refills": 11,
         "as_needed": true,
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
         "duration": {
-            "quantity": 30,
-            "unit": "days"
+          "quantity": 30,
+          "unit": "days"
         }
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal",
@@ -266,10 +287,17 @@
         }
       ],
       "prescription": {
+        "refills": 11,
         "as_needed": true,
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
         "duration": {
-            "quantity": 30,
-            "unit": "days"
+          "quantity": 30,
+          "unit": "days"
         }
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal",
@@ -287,10 +315,17 @@
         }
       ],
       "prescription": {
+        "refills": 11,
         "as_needed": true,
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
         "duration": {
-            "quantity": 30,
-            "unit": "days"
+          "quantity": 30,
+          "unit": "days"
         }
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal",
@@ -344,10 +379,17 @@
         }
       ],
       "prescription": {
+        "refills": 11,
         "as_needed": true,
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
         "duration": {
-            "quantity": 30,
-            "unit": "days"
+          "quantity": 30,
+          "unit": "days"
         }
       },
       "direct_transition": "OTC_Pain_Reliever_Terminal",
