@@ -228,6 +228,19 @@
           "display": "Alendronic acid 10 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "End_Diagnosis_Encounter",
       "chronic": true,
       "reason": "Diagnose_Osteoporosis"
@@ -245,8 +258,8 @@
       "direct_transition": "Wellness_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": "313423004",
-        "display": "At increased risk of osteoporosis (finding)"
+        "code": 313423004,
+        "display": "At risk of osteoporosis (finding)"
       }
     }
   },

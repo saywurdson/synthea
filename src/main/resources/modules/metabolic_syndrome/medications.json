@@ -49,6 +49,19 @@
           "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "reason": "diabetes_stage",
       "direct_transition": "Bitherapy",
       "chronic": true
@@ -204,6 +217,19 @@
           "display": "canagliflozin 100 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "reason": "diabetes_stage",
       "direct_transition": "Insulin"
     },
@@ -298,6 +324,13 @@
           "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
         }
       ],
+      "prescription": {
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "reason": "diabetes_stage",
       "direct_transition": "Terminal",
       "chronic": true
@@ -322,6 +355,13 @@
           "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
         }
       ],
+      "prescription": {
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "reason": "diabetes_stage",
       "direct_transition": "Terminal",
       "chronic": true

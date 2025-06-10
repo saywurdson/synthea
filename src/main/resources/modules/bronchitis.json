@@ -182,7 +182,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom (procedure)"
+          "display": "Encounter for symptom"
         }
       ],
       "distributed_transition": [
@@ -211,7 +211,7 @@
         {
           "system": "SNOMED-CT",
           "code": "399208008",
-          "display": "Plain X-ray of chest (procedure)"
+          "display": "Plain chest X-ray (procedure)"
         }
       ],
       "duration": {
@@ -291,24 +291,24 @@
         {
           "system": "SNOMED-CT",
           "code": "53950000",
-          "display": "Respiratory therapy (procedure)"
+          "display": "Respiratory therapy"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "710081004",
-          "display": "Smoking cessation therapy (regime/therapy)"
+          "display": "Smoking cessation therapy"
         },
         {
           "system": "SNOMED-CT",
           "code": "304510005",
-          "display": "Recommendation to avoid exercise (procedure)"
+          "display": "Recommendation to avoid exercise"
         },
         {
           "system": "SNOMED-CT",
           "code": "371605008",
-          "display": "Deep breathing and coughing exercises (regime/therapy)"
+          "display": "Deep breathing and coughing exercises"
         }
       ],
       "direct_transition": "OTC_Medicine"
@@ -321,19 +321,19 @@
         {
           "system": "SNOMED-CT",
           "code": "53950000",
-          "display": "Respiratory therapy (procedure)"
+          "display": "Respiratory therapy"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "304510005",
-          "display": "Recommendation to avoid exercise (procedure)"
+          "display": "Recommendation to avoid exercise"
         },
         {
           "system": "SNOMED-CT",
           "code": "371605008",
-          "display": "Deep breathing and coughing exercises (regime/therapy)"
+          "display": "Deep breathing and coughing exercises"
         }
       ],
       "direct_transition": "OTC_Medicine"
@@ -391,6 +391,12 @@
           "display": "Acetaminophen 21.7 MG/ML / Dextromethorphan Hydrobromide 1 MG/ML / doxylamine succinate 0.417 MG/ML Oral Solution"
         }
       ],
+      "prescription": {
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Doctor_Visit"
     },
     "Acetaminophen": {
@@ -404,6 +410,12 @@
           "display": "Acetaminophen 325 MG Oral Tablet"
         }
       ],
+      "prescription": {
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Doctor_Visit"
     },
     "End_Doctor_Visit": {

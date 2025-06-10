@@ -14,7 +14,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "271737000",
+          "code": 271737000,
           "display": "Anemia (disorder)"
         }
       ],
@@ -28,7 +28,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "415300000",
+          "code": 415300000,
           "display": "Review of systems (procedure)"
         }
       ],
@@ -47,7 +47,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "162676008",
+          "code": 162676008,
           "display": "Brief general examination (procedure)"
         }
       ],
@@ -168,7 +168,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "180207008",
+          "code": 180207008,
           "display": "Intravenous blood transfusion of packed cells (procedure)"
         }
       ],
@@ -184,8 +184,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "14768001",
-          "display": "Peripheral blood smear interpretation (procedure)"
+          "code": 14768001,
+          "display": "Peripheral blood smear interpretation"
         }
       ],
       "duration": {
@@ -200,8 +200,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "430193006",
-          "display": "Medication reconciliation (procedure)"
+          "code": 430193006,
+          "display": "Medication Reconciliation (procedure)"
         }
       ],
       "duration": {
@@ -237,6 +237,20 @@
           "display": "ferrous sulfate 325 MG Oral Tablet"
         }
       ],
+      "prescription": {
+          "refills": 0,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "distributed_transition": [
         {
           "transition": "Vitamin B12 Booster",
@@ -257,6 +271,20 @@
           "display": "Vitamin B12 5 MG/ML Injectable Solution"
         }
       ],
+      "prescription": {
+          "refills": 0,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End Encounter After Medication Rx"
     },
     "Anemia_Encounter": {
@@ -265,8 +293,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
       "conditional_transition": [
@@ -1010,8 +1038,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": 185347001,
+          "display": "Encounter for problem"
         }
       ],
       "conditional_transition": [

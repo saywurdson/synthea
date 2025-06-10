@@ -37,7 +37,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "49436004",
+          "code": 49436004,
           "display": "Atrial fibrillation (disorder)"
         }
       ],
@@ -56,7 +56,8 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1981
+            "year": 1981,
+            "value": 0
           }
         },
         {
@@ -64,7 +65,8 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1954
+            "year": 1954,
+            "value": 0
           }
         },
         {
@@ -81,6 +83,20 @@
           "display": "Warfarin Sodium 5 MG Oral Tablet"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "direct_transition": "Digoxin",
       "reason": "Diagnosis",
       "chronic": true
@@ -94,6 +110,20 @@
           "display": "verapamil hydrochloride 80 MG Oral Tablet [Calan]"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "direct_transition": "Warfarin",
       "reason": "Diagnosis",
       "chronic": true
@@ -107,6 +137,20 @@
           "display": "Digoxin 0.125 MG Oral Tablet"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "reason": "Diagnosis",
       "chronic": true,
       "direct_transition": "Procedure Check"
@@ -129,7 +173,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "18286008",
+          "code": 18286008,
           "display": "Catheter ablation of tissue of heart (procedure)"
         }
       ],
@@ -158,7 +202,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "180325003",
+          "code": 180325003,
           "display": "Direct current cardioversion (procedure)"
         }
       ],
@@ -181,7 +225,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": "706004007",
+        "code": 706004007,
         "display": "Implantable cardiac pacemaker (physical object)"
       },
       "direct_transition": "End Encounter"

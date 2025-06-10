@@ -210,7 +210,11 @@
         }
       ],
       "prescription": {
-        "as_needed": true
+        "as_needed": true,
+        "duration": {
+            "quantity": 30,
+            "unit": "days"
+        }
       },
       "direct_transition": "OTC_Anthistamine_Terminal"
     },

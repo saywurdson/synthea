@@ -56,7 +56,7 @@
         {
           "system": "SNOMED-CT",
           "code": "698314001",
-          "display": "Consultation for treatment (procedure)"
+          "display": "Consultation for treatment"
         }
       ],
       "direct_transition": "Prescribe_Nuvaring",
@@ -72,6 +72,14 @@
           "display": "21 DAY ethinyl estradiol 0.000625 MG/HR / etonogestrel 0.005 MG/HR Vaginal System [NuvaRing]"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Consultation_Encounter"
     },
     "End_Consultation_Encounter": {

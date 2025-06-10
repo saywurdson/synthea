@@ -187,7 +187,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom (procedure)"
+          "display": "Encounter for symptom"
         }
       ],
       "distributed_transition": [
@@ -411,7 +411,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom (procedure)"
+          "display": "Encounter for symptom"
         }
       ],
       "complex_transition": [
@@ -539,13 +539,25 @@
           "display": "doxycycline hyclate 100 MG"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "days"
+        }
+      },
       "direct_transition": "End_Encounter"
     },
     "Nebulizer": {
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": "170615005",
+        "code": 170615005,
         "display": "Home nebulizer (physical object)"
       },
       "direct_transition": "End_Chronic_Followup"

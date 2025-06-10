@@ -99,7 +99,7 @@
         {
           "system": "SNOMED-CT",
           "code": "69896004",
-          "display": "Rheumatoid arthritis (disorder)"
+          "display": "Rheumatoid arthritis"
         }
       ],
       "direct_transition": "RA_Diagnosis"
@@ -112,7 +112,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "RA_CarePlan"
@@ -125,7 +125,7 @@
         {
           "system": "SNOMED-CT",
           "code": "408869004",
-          "display": "Musculoskeletal care (regime/therapy)"
+          "display": "Musculoskeletal care"
         }
       ],
       "activities": [
@@ -137,12 +137,12 @@
         {
           "system": "SNOMED-CT",
           "code": "229580007",
-          "display": "Ice therapy (procedure)"
+          "display": "Ice therapy"
         },
         {
           "system": "SNOMED-CT",
           "code": "226234005",
-          "display": "Healthy diet (finding)"
+          "display": "Healthy diet"
         }
       ],
       "direct_transition": "RA_Nonopioid_Pain_Medication"
@@ -193,6 +193,18 @@
           "display": "Methotrexate 2.5 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 4,
+          "frequency": 1,
+          "period": 7,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 28,
+          "unit": "days"
+        }
+      },
       "direct_transition": "Encounter_Ends_After_DMARD"
     },
     "Encounter_Ends_After_DMARD": {

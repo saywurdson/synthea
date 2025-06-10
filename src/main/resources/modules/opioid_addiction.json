@@ -42,12 +42,14 @@
               {
                 "condition_type": "Date",
                 "operator": ">=",
-                "year": 1990
+                "year": 1990,
+                "value": 0
               },
               {
                 "condition_type": "Date",
                 "operator": "<",
-                "year": 2014
+                "year": 2014,
+                "value": 0
               }
             ]
           }
@@ -171,7 +173,7 @@
         {
           "system": "SNOMED-CT",
           "code": "196416002",
-          "display": "Impacted molars (disorder)"
+          "display": "Impacted molars"
         }
       ],
       "direct_transition": "Enter_Directed_Use_Encounter1"
@@ -183,8 +185,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
-          "display": "Emergency room admission (procedure)"
+          "code": 182813001,
+          "display": "Emergency treatment (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_3"
@@ -195,7 +197,7 @@
         {
           "system": "SNOMED-CT",
           "code": "65546002",
-          "display": "Extraction of wisdom tooth (procedure)"
+          "display": "Extraction of wisdom tooth"
         }
       ],
       "direct_transition": "Directed_Use_Prescription1"
@@ -219,7 +221,7 @@
         {
           "system": "SNOMED-CT",
           "code": "82423001",
-          "display": "Chronic pain (finding)"
+          "display": "Chronic pain"
         }
       ],
       "direct_transition": "Enter_Directed_Use_Encounter2"
@@ -247,6 +249,19 @@
           "display": "Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "End_Directed_Use_Encounter"
     },
     "Enter_Directed_Use_Condition3": {
@@ -256,7 +271,7 @@
         {
           "system": "SNOMED-CT",
           "code": "124171000119105",
-          "display": "Chronic intractable migraine without aura (disorder)"
+          "display": "Chronic intractable migraine without aura"
         }
       ],
       "direct_transition": "Enter_Directed_Use_Encounter3"
@@ -268,8 +283,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
-          "display": "Emergency room admission (procedure)"
+          "code": 182813001,
+          "display": "Emergency treatment (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -549,7 +564,7 @@
         {
           "system": "SNOMED-CT",
           "code": "56876005",
-          "display": "Drug rehabilitation and detoxification (regime/therapy)"
+          "display": "Drug rehabilitation and detoxification"
         }
       ],
       "direct_transition": "Pain_Vital_4",
@@ -586,7 +601,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
+          "code": 185347001,
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -623,8 +638,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1149222004",
-          "display": "Overdose (disorder)"
+          "code": "55680006",
+          "display": "Drug overdose"
         }
       ],
       "direct_transition": "Directed_Use_Overdose_Encounter"
@@ -661,8 +676,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1149222004",
-          "display": "Overdose (disorder)"
+          "code": "55680006",
+          "display": "Drug overdose"
         }
       ],
       "direct_transition": "Misuse_Overdose_Encounter"
@@ -699,8 +714,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1149222004",
-          "display": "Overdose (disorder)"
+          "code": "55680006",
+          "display": "Drug overdose"
         }
       ],
       "direct_transition": "Addiction_Overdose_Encounter"
@@ -745,7 +760,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "734163000",
+          "code": 734163000,
           "display": "Care plan (record artifact)"
         }
       ],
@@ -753,17 +768,17 @@
         {
           "system": "SNOMED-CT",
           "code": "60112009",
-          "display": "Drug addiction counseling (procedure)"
+          "display": "Drug addiction counseling"
         },
         {
           "system": "SNOMED-CT",
           "code": "61480009",
-          "display": "Drug detoxification (regime/therapy)"
+          "display": "Drug detoxification"
         },
         {
           "system": "SNOMED-CT",
-          "code": "266707007",
-          "display": "Drug addiction therapy (regime/therapy)"
+          "code": 266707007,
+          "display": "Drug addiction therapy"
         }
       ],
       "direct_transition": "End_Addiction_Overdose_Encounter"
@@ -777,8 +792,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1149222004",
-          "display": "Overdose (disorder)"
+          "code": "55680006",
+          "display": "Drug overdose"
         }
       ],
       "direct_transition": "Terminal"
@@ -874,7 +889,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "52052004",
+          "code": 52052004,
           "display": "Rehabilitation therapy (regime/therapy)"
         }
       ],
@@ -895,7 +910,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "6525002",
+          "code": 6525002,
           "display": "Dependent drug abuse (disorder)"
         }
       ],
@@ -908,7 +923,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "6525002",
+          "code": 6525002,
           "display": "Dependent drug abuse (disorder)"
         }
       ],

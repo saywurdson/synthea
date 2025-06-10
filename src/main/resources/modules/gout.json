@@ -127,7 +127,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -140,7 +140,7 @@
         {
           "system": "SNOMED-CT",
           "code": "408869004",
-          "display": "Musculoskeletal care (regime/therapy)"
+          "display": "Musculoskeletal care"
         }
       ],
       "activities": [
@@ -152,12 +152,12 @@
         {
           "system": "SNOMED-CT",
           "code": "229580007",
-          "display": "Ice therapy (procedure)"
+          "display": "Ice therapy"
         },
         {
           "system": "SNOMED-CT",
           "code": "226234005",
-          "display": "Healthy diet (finding)"
+          "display": "Healthy diet"
         }
       ],
       "direct_transition": "Gout_Nonopioid_Pain_Medication"
@@ -192,6 +192,19 @@
           "display": "Naproxen 500 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "Uric_Acid_Reducer"
     },
     "Colchicine": {
@@ -208,6 +221,19 @@
           "display": "Colchicine 0.6 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "Uric_Acid_Reducer"
     },
     "Uric_Acid_Reducer": {
@@ -220,6 +246,19 @@
           "display": "Allopurinol 100 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "End_Diagnosis_Encounter"
     },
     "End_Diagnosis_Encounter": {

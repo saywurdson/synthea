@@ -17,7 +17,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "433112001",
+          "code": 433112001,
           "display": "Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance with contrast (procedure)"
         }
       ],
@@ -44,8 +44,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "230690007",
-          "display": "Cerebrovascular accident (disorder)"
+          "code": 230690007,
+          "display": "Stroke"
         }
       ],
       "direct_transition": "Emergency_Encounter"
@@ -57,7 +57,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
+          "code": 50849002,
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -116,6 +116,19 @@
           "display": "Clopidogrel 75 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "Alteplase"
     },
     "Alteplase": {
@@ -134,7 +147,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "40701008",
+          "code": 40701008,
           "display": "Echocardiography (procedure)"
         }
       ],
@@ -155,8 +168,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "230690007",
-          "display": "Cerebrovascular accident (disorder)"
+          "code": 230690007,
+          "display": "Stroke"
         }
       ],
       "direct_transition": "End_Encounter"
