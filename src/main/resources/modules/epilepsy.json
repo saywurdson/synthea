@@ -282,6 +282,20 @@
           "display": "carbamazepine 20 MG/ML Oral Suspension [Tegretol]"
         }
       ],
+      "prescription": {
+        "refills": 11,
+        "as_needed": false,
+        "dosage": {
+          "amount": 20,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        }
+      },
       "assign_to_attribute": "seizure_meds",
       "conditional_transition": [
         {
@@ -306,6 +320,20 @@
           "display": "Diazepam 5 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "refills": 11,
+        "as_needed": false,
+        "dosage": {
+          "amount": 1,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        }
+      },
       "assign_to_attribute": "seizure_meds",
       "conditional_transition": [
         {
@@ -330,6 +358,20 @@
           "display": "clonazePAM 0.25 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "refills": 11,
+        "as_needed": false,
+        "dosage": {
+          "amount": 2,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        }
+      },
       "assign_to_attribute": "seizure_meds",
       "conditional_transition": [
         {
