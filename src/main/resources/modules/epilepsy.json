@@ -154,14 +154,18 @@
         {
           "system": "SNOMED-CT",
           "code": "128613002",
-          "display": "Seizure disorder (disorder)"
+          "display": "Seizure disorder"
         }
       ],
       "direct_transition": "Seizure_Encounter",
+      "remarks": [
+        ""
+      ],
       "assign_to_attribute": "seizure"
     },
     "Seizure_Encounter": {
       "type": "Encounter",
+      "wellness": false,
       "encounter_class": "emergency",
       "reason": "seizure",
       "remarks": [
@@ -182,8 +186,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1290882004",
-          "display": "History of seizure (situation)"
+          "code": "703151001",
+          "display": "History of single seizure (situation)"
         }
       ],
       "direct_transition": "EEG_Test"
@@ -234,7 +238,7 @@
         {
           "system": "SNOMED-CT",
           "code": "84757009",
-          "display": "Epilepsy (disorder)"
+          "display": "Epilepsy"
         }
       ],
       "distributed_transition": [
@@ -406,10 +410,18 @@
     },
     "Medicine_Encounter": {
       "type": "Encounter",
+      "encounter_class": "outpatient",
       "wellness": true,
       "reason": "seizure",
       "remarks": [
         "Patients start with medication prescription or follow-up."
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "390906007",
+          "display": "Follow-Up Encounter"
+        }
       ],
       "distributed_transition": [
         {
@@ -446,7 +458,7 @@
         {
           "system": "SNOMED-CT",
           "code": "95281009",
-          "display": "Sudden cardiac death (disorder)"
+          "display": "Sudden Cardiac Death"
         }
       ],
       "direct_transition": "Terminal"

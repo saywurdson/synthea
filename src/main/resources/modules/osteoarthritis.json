@@ -56,7 +56,7 @@
         {
           "system": "SNOMED-CT",
           "code": "201834006",
-          "display": "Localized, primary osteoarthritis of the hand (disorder)"
+          "display": "Localized, primary osteoarthritis of the hand"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -69,7 +69,7 @@
         {
           "system": "SNOMED-CT",
           "code": "239873007",
-          "display": "Osteoarthritis of knee (disorder)"
+          "display": "Osteoarthritis of knee"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -82,7 +82,7 @@
         {
           "system": "SNOMED-CT",
           "code": "239872002",
-          "display": "Osteoarthritis of hip (disorder)"
+          "display": "Osteoarthritis of hip"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -96,7 +96,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "Pain Vital"
@@ -109,19 +109,19 @@
         {
           "system": "SNOMED-CT",
           "code": "408869004",
-          "display": "Musculoskeletal care (regime/therapy)"
+          "display": "Musculoskeletal care"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "386294003",
-          "display": "Joint mobility exercises (regime/therapy)"
+          "display": "Joint mobility exercises"
         },
         {
           "system": "SNOMED-CT",
           "code": "266694003",
-          "display": "Heat therapy (procedure)"
+          "display": "Heat therapy"
         }
       ],
       "direct_transition": "Assign DME"
@@ -136,6 +136,19 @@
           "display": "Naproxen sodium 220 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "remarks": [
         "For knees or hips we can consider joint replacement surgery. However this is not a ",
         "treatment option for arthritis of the hand. The total_joint_replacement module will ",
@@ -268,6 +281,7 @@
           ]
         },
         {
+          "distributions": [],
           "transition": "Non_Veteran"
         }
       ]
@@ -457,6 +471,7 @@
           ]
         },
         {
+          "distributions": [],
           "transition": "OA_Pain_Medication"
         }
       ],
@@ -473,8 +488,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": "1255320005",
-        "display": "Wheeled walker (physical object)"
+        "code": 705406009,
+        "display": "Walker (physical object)"
       },
       "assign_to_attribute": "osteoarthritis_dme",
       "direct_transition": "Finish DME"

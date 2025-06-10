@@ -62,7 +62,7 @@
         {
           "system": "SNOMED-CT",
           "code": "192127007",
-          "display": "Child attention deficit disorder (disorder)"
+          "display": "Child attention deficit disorder"
         }
       ],
       "direct_transition": "ADHD_Diagnosis"
@@ -75,7 +75,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "ADD_Symptom1"
@@ -132,19 +132,19 @@
         {
           "system": "SNOMED-CT",
           "code": "386522008",
-          "display": "Overactivity/inattention behavior management (regime/therapy)"
+          "display": "Overactivity/inattention behavior management"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "409063005",
-          "display": "Counseling (procedure)"
+          "display": "Counseling"
         },
         {
           "system": "SNOMED-CT",
           "code": "405783006",
-          "display": "Psychological assessment (procedure)"
+          "display": "Psychological assessment"
         }
       ],
       "remarks": [
@@ -195,7 +195,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "Behavior_Treatment_Procedure"
@@ -337,6 +337,20 @@
           "display": "Methylphenidate Hydrochloride 20 MG Oral Tablet"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "distributed_transition": [
         {
           "distribution": 0.5,
@@ -359,6 +373,12 @@
           "display": "atomoxetine 100 MG Oral Capsule"
         }
       ],
+      "prescription": {
+          "duration": {
+              "quantity": 30,
+              "unit": "days"
+          }
+      },
       "distributed_transition": [
         {
           "distribution": 0.5,

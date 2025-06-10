@@ -95,7 +95,7 @@
         {
           "system": "SNOMED-CT",
           "code": "95417003",
-          "display": "Primary fibromyalgia syndrome (disorder)"
+          "display": "Primary fibromyalgia syndrome"
         }
       ],
       "direct_transition": "Fibromyalgia_Diagnosis"
@@ -108,7 +108,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "display": "Encounter for problem"
         }
       ],
       "direct_transition": "Fibromyalgia_Symptom1"
@@ -175,19 +175,19 @@
         {
           "system": "SNOMED-CT",
           "code": "408869004",
-          "display": "Musculoskeletal care (regime/therapy)"
+          "display": "Musculoskeletal care"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "386294003",
-          "display": "Joint mobility exercises (regime/therapy)"
+          "display": "Joint mobility exercises"
         },
         {
           "system": "SNOMED-CT",
           "code": "226060000",
-          "display": "Stress management (procedure)"
+          "display": "Stress management"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -205,6 +205,19 @@
           "display": "Naproxen 500 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "End_Diagnosis_Encounter"
     },
     "End_Diagnosis_Encounter": {
@@ -228,7 +241,7 @@
         {
           "system": "SNOMED-CT",
           "code": "32485007",
-          "display": "Hospital admission (procedure)"
+          "display": "Hospital admission"
         }
       ],
       "complex_transition": [
@@ -305,6 +318,19 @@
           "display": "pregabalin 100 MG Oral Capsule"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "End_Episode_Encounter"
     },
     "Prescribe_Cymbalta": {
@@ -318,6 +344,19 @@
           "display": "duloxetine 20 MG Delayed Release Oral Capsule"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "End_Episode_Encounter"
     },
     "Prescribe_Savella": {
@@ -331,6 +370,19 @@
           "display": "Milnacipran hydrochloride 100 MG Oral Tablet"
         }
       ],
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 30,
+          "unit": "days"
+        },
+        "refills": 11
+      },
       "direct_transition": "End_Episode_Encounter"
     },
     "Prescribe_Opioid": {

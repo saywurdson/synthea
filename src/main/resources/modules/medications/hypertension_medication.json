@@ -237,6 +237,7 @@
               }
             ]
           },
+          "distributions": [],
           "transition": "ACE_Allergy_Check_2"
         },
         {
@@ -500,7 +501,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -526,7 +527,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -552,7 +553,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -575,7 +576,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -601,7 +602,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -627,7 +628,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -656,7 +657,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -682,7 +683,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -705,7 +706,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -734,7 +735,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -760,7 +761,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -892,6 +893,7 @@
               }
             ]
           },
+          "distributions": [],
           "transition": "ACE_Allergy_Check"
         },
         {
@@ -1092,7 +1094,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -1151,7 +1153,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -1198,7 +1200,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       },
@@ -1246,7 +1248,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       }
@@ -1293,7 +1295,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 30,
           "unit": "days"
         }
       }

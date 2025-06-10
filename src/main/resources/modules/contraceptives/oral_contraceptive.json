@@ -75,7 +75,7 @@
         {
           "system": "SNOMED-CT",
           "code": "698314001",
-          "display": "Consultation for treatment (procedure)"
+          "display": "Consultation for treatment"
         }
       ],
       "direct_transition": "Combination_Or_Minipill",
@@ -192,6 +192,20 @@
           "display": "Camila 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Errin": {
@@ -204,6 +218,20 @@
           "display": "Errin 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Jolivette": {
@@ -216,6 +244,20 @@
           "display": "Jolivette 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Combination_Pill": {
@@ -398,6 +440,20 @@
           "display": "Mestranol / Norethynodrel"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Norinyl": {
@@ -410,6 +466,20 @@
           "display": "Norinyl 1+50 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Estrostep": {
@@ -422,6 +492,20 @@
           "display": "Estrostep Fe 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Ortho_Tri_Cyclen": {
@@ -434,6 +518,20 @@
           "display": "Ortho Tri-Cyclen 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Trinessa": {
@@ -446,6 +544,20 @@
           "display": "Trinessa 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Seasonique": {
@@ -461,6 +573,20 @@
           "display": "Seasonique 91 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 3,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 91,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Yaz": {
@@ -473,6 +599,20 @@
           "display": "Yaz 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Natazia": {
@@ -485,6 +625,20 @@
           "display": "Natazia 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "Prescribe_Levora": {
@@ -497,6 +651,20 @@
           "display": "Levora 0.15/30 28 Day Pack"
         }
       ],
+      "prescription": {
+          "refills": 11,
+          "as_needed": false,
+          "dosage": {
+              "amount": 1,
+              "frequency": 1,
+              "period": 1,
+              "unit": "days"
+          },
+          "duration": {
+              "quantity": 28,
+              "unit": "days"
+          }
+      },
       "direct_transition": "End_Encounter"
     },
     "End_Encounter": {
