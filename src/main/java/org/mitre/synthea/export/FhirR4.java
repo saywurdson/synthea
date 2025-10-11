@@ -71,6 +71,7 @@ import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContextComponent;
 import org.hl7.fhir.r4.model.Dosage;
 import org.hl7.fhir.r4.model.Dosage.DosageDoseAndRateComponent;
+import org.hl7.fhir.r4.model.Duration;
 import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
@@ -2416,6 +2417,64 @@ public class FhirR4 {
       List<Dosage> dosageInstruction = new ArrayList<Dosage>();
       dosageInstruction.add(dosage);
       medicationResource.setDosageInstruction(dosageInstruction);
+
+      // Dispense request calculations
+      MedicationRequest.MedicationRequestDispenseRequestComponent dispenseRequest = 
+          new MedicationRequest.MedicationRequestDispenseRequestComponent();
+      
+      // Set expectedSupplyDuration (days supply)
+      if (rxInfo.has("duration")) {
+        JsonObject duration = rxInfo.get("duration").getAsJsonObject();
+        if (duration.has("quantity") && duration.has("unit")) {
+          Duration supplyDuration = new Duration();
+          supplyDuration.setValue(duration.get("quantity").getAsDouble());
+          supplyDuration.setUnit(duration.get("unit").getAsString());
+          supplyDuration.setSystem(UNITSOFMEASURE_URI);
+          supplyDuration.setCode(duration.get("unit").getAsString());
+          dispenseRequest.setExpectedSupplyDuration(supplyDuration);
+        }
+      }
+      
+      // Set numberOfRepeatsAllowed (refills)
+      if (rxInfo.has("refills")) {
+        int refills = rxInfo.get("refills").getAsInt();
+        dispenseRequest.setNumberOfRepeatsAllowed(refills);
+      }
+      
+      // Calculate and set quantity to dispense
+      if (rxInfo.has("dosage") && rxInfo.has("duration")) {
+        JsonObject dosageInfo = rxInfo.get("dosage").getAsJsonObject();
+        JsonObject durationInfo = rxInfo.get("duration").getAsJsonObject();
+        
+        if (dosageInfo.has("amount") && dosageInfo.has("frequency") && 
+            dosageInfo.has("period") && dosageInfo.has("unit") &&
+            durationInfo.has("quantity")) {
+          
+          double amount = dosageInfo.get("amount").getAsDouble();
+          int frequency = dosageInfo.get("frequency").getAsInt();
+          double period = dosageInfo.get("period").getAsDouble();
+          String periodUnit = dosageInfo.get("unit").getAsString();
+          double durationDays = durationInfo.get("quantity").getAsDouble();
+          
+          // Calculate total quantity needed
+          // Convert everything to daily frequency
+          double dailyFrequency = frequency;
+          if (periodUnit.equals("hours")) {
+            dailyFrequency = frequency * (24.0 / period);
+          } else if (periodUnit.equals("weeks")) {
+            dailyFrequency = frequency / (period * 7.0);
+          }
+          
+          double totalQuantity = amount * dailyFrequency * durationDays;
+          
+          SimpleQuantity dispensedQuantity = new SimpleQuantity();
+          dispensedQuantity.setValue(totalQuantity);
+          
+          dispenseRequest.setQuantity(dispensedQuantity);
+        }
+      }
+      
+      medicationResource.setDispenseRequest(dispenseRequest);
 
     }
 
