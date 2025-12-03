@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -71,7 +70,7 @@ import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContextComponent;
 import org.hl7.fhir.r4.model.Dosage;
 import org.hl7.fhir.r4.model.Dosage.DosageDoseAndRateComponent;
-import org.hl7.fhir.r4.model.Duration;
+import org.hl7.fhir.r4.model.Duration; // New Code
 import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
@@ -126,6 +125,7 @@ import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.SimpleQuantity;
 import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.Specimen;
 import org.hl7.fhir.r4.model.SupplyDelivery;
 import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
 import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
@@ -140,9 +140,7 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.engine.Components.Attachment;
-import org.mitre.synthea.export.rif.CodeMapper;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
@@ -175,6 +173,7 @@ public class FhirR4 {
   private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
   private static final String DISCHARGE_URI = "http://www.nubc.org/patient-discharge";
+  private static final String SHR_EXT = "http://standardhealthrecord.org/fhir/StructureDefinition/";
   private static final String SYNTHEA_EXT = "http://synthetichealth.github.io/synthea/";
   private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
@@ -186,31 +185,23 @@ public class FhirR4 {
   @SuppressWarnings("rawtypes")
   private static final Map languageLookup = loadLanguageLookup();
 
+  protected static boolean USE_SHR_EXTENSIONS =
+      Config.getAsBoolean("exporter.fhir.use_shr_extensions");
   protected static boolean TRANSACTION_BUNDLE =
       Config.getAsBoolean("exporter.fhir.transaction_bundle");
 
+  /* For the most part the US Core changes from v4 -> v5 are backwards compatible,
+   * so for those cases just check USE_US_CORE_IG.
+   * If there are version differences then use USE_US_CORE_(#) to separate them out.
+   */
   protected static boolean USE_US_CORE_IG =
       Config.getAsBoolean("exporter.fhir.use_us_core_ig");
   protected static String US_CORE_VERSION =
-      Config.get("exporter.fhir.us_core_version", "6.1.0");
+      Config.get("exporter.fhir.us_core_version", "5.0.1");
 
   private static Table<String, String, String> US_CORE_MAPPING;
-  private static final Table<String, String, String> US_CORE_3_MAPPING;
   private static final Table<String, String, String> US_CORE_4_MAPPING;
   private static final Table<String, String, String> US_CORE_5_MAPPING;
-  private static final Table<String, String, String> US_CORE_6_MAPPING;
-
-  public static enum USCoreVersion {
-    v311, v400, v501, v610
-  }
-
-  protected static boolean useUSCore3() {
-    boolean useUSCore3 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("3");
-    if (useUSCore3) {
-      US_CORE_MAPPING = US_CORE_3_MAPPING;
-    }
-    return useUSCore3;
-  }
 
   protected static boolean useUSCore4() {
     boolean useUSCore4 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("4");
@@ -228,16 +219,10 @@ public class FhirR4 {
     return useUSCore5;
   }
 
-  protected static boolean useUSCore6() {
-    boolean useUSCore6 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("6");
-    if (useUSCore6) {
-      US_CORE_MAPPING = US_CORE_6_MAPPING;
-    }
-    return useUSCore6;
-  }
-
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
-  private static final String PASSPORT_URI = Config.get("generate.geography.passport_uri", "http://hl7.org/fhir/sid/passport-USA");
+
+  private static final Table<String, String, String> SHR_MAPPING =
+      loadMapping("shr_mapping.csv");
 
   private static final HashSet<Class<? extends Resource>> includedResources = new HashSet<>();
   private static final HashSet<Class<? extends Resource>> excludedResources = new HashSet<>();
@@ -246,23 +231,97 @@ public class FhirR4 {
     reloadIncludeExclude();
 
     Map<String, Table<String, String, String>> usCoreMappings =
-        loadMappingWithVersions("us_core_mapping.csv", "3", "4", "5", "6");
+        loadMappingWithVersions("us_core_mapping.csv", "4", "5");
 
-    US_CORE_3_MAPPING = usCoreMappings.get("3");
     US_CORE_4_MAPPING = usCoreMappings.get("4");
     US_CORE_5_MAPPING = usCoreMappings.get("5");
-    US_CORE_6_MAPPING = usCoreMappings.get("6");
 
-    if (US_CORE_VERSION.startsWith("3")) {
-      US_CORE_MAPPING = US_CORE_3_MAPPING;
-    } else if (US_CORE_VERSION.startsWith("4")) {
+    if (US_CORE_VERSION.startsWith("4")) {
       US_CORE_MAPPING = US_CORE_4_MAPPING;
     } else if (US_CORE_VERSION.startsWith("5")) {
       US_CORE_MAPPING = US_CORE_5_MAPPING;
-    } else if (US_CORE_VERSION.startsWith("6")) {
-      US_CORE_MAPPING = US_CORE_6_MAPPING;
     }
   }
+
+  // LOINC panel codes to SNOMED specimen type mapping
+  // Validated against OMOP CONCEPT.csv (domain=Specimen, vocabulary=SNOMED, standard_concept=S)
+  private static final Map<String, String[]> LOINC_TO_SPECIMEN = new HashMap<>();
+  static {
+    // ========== BLOOD PANELS (Venous blood specimen: SNOMED 122555007, OMOP 4045667) ==========
+    // CBC panels
+    LOINC_TO_SPECIMEN.put("58410-2", new String[]{"122555007", "Venous blood specimen"});
+    LOINC_TO_SPECIMEN.put("69742-5", new String[]{"122555007", "Venous blood specimen"});
+    LOINC_TO_SPECIMEN.put("57021-8", new String[]{"122555007", "Venous blood specimen"});
+    // Heart failure panel
+    LOINC_TO_SPECIMEN.put("55405-5", new String[]{"122555007", "Venous blood specimen"});
+
+    // ========== SERUM/PLASMA PANELS (Serum specimen: SNOMED 119364003, OMOP 4001181) ==========
+    // Metabolic panels
+    LOINC_TO_SPECIMEN.put("51990-0", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("24321-2", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("24323-8", new String[]{"119364003", "Serum specimen"});
+    // Lipid panels
+    LOINC_TO_SPECIMEN.put("57698-3", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("24331-1", new String[]{"119364003", "Serum specimen"});
+    // Individual serum tests
+    LOINC_TO_SPECIMEN.put("2093-3", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("2571-8", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("2339-0", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("42719-5", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("10230-1", new String[]{"119364003", "Serum specimen"});
+
+    // ========== URINE PANELS (Urine specimen: SNOMED 122575003, OMOP 4046280) ==========
+    LOINC_TO_SPECIMEN.put("24356-8", new String[]{"122575003", "Urine specimen"});
+    LOINC_TO_SPECIMEN.put("24357-6", new String[]{"122575003", "Urine specimen"});
+    LOINC_TO_SPECIMEN.put("5767-9", new String[]{"122575003", "Urine specimen"});
+    LOINC_TO_SPECIMEN.put("5778-6", new String[]{"122575003", "Urine specimen"});
+    LOINC_TO_SPECIMEN.put("25428-4", new String[]{"122575003", "Urine specimen"});
+
+    // ========== PLASMA PANELS (Plasma specimen: SNOMED 119361006, OMOP 4000626) ==========
+    // Coagulation tests
+    LOINC_TO_SPECIMEN.put("5902-2", new String[]{"119361006", "Plasma specimen"});
+    LOINC_TO_SPECIMEN.put("6301-6", new String[]{"119361006", "Plasma specimen"});
+    LOINC_TO_SPECIMEN.put("3173-2", new String[]{"119361006", "Plasma specimen"});
+
+    // ========== INDIVIDUAL BLOOD TESTS (Blood specimen: SNOMED 119297000, OMOP 4001225) ==========
+    LOINC_TO_SPECIMEN.put("6690-2", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("26464-8", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("789-8", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("718-7", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("4544-3", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("787-2", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("785-6", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("786-4", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("21000-5", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("777-3", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("32207-3", new String[]{"119297000", "Blood specimen"});
+    LOINC_TO_SPECIMEN.put("32623-1", new String[]{"119297000", "Blood specimen"});
+
+    // ========== ADDITIONAL COMMON TESTS ==========
+    // A1c (Blood)
+    LOINC_TO_SPECIMEN.put("4548-4", new String[]{"119297000", "Blood specimen"});
+    // Renal function (Serum)
+    LOINC_TO_SPECIMEN.put("2160-0", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("3094-0", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("33914-3", new String[]{"119364003", "Serum specimen"});
+    // Liver function (Serum)
+    LOINC_TO_SPECIMEN.put("1742-6", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("1920-8", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("6768-6", new String[]{"119364003", "Serum specimen"});
+    // Electrolytes (Serum)
+    LOINC_TO_SPECIMEN.put("2951-2", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("2823-3", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("2075-0", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("2028-9", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("17861-6", new String[]{"119364003", "Serum specimen"});
+    // Thyroid (Serum)
+    LOINC_TO_SPECIMEN.put("3016-3", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("3026-2", new String[]{"119364003", "Serum specimen"});
+    // Inflammatory markers (Blood/Serum)
+    LOINC_TO_SPECIMEN.put("1988-5", new String[]{"119364003", "Serum specimen"});
+    LOINC_TO_SPECIMEN.put("30341-2", new String[]{"119297000", "Blood specimen"});
+  }
+  private static final String[] DEFAULT_SPECIMEN = new String[]{"119297000", "Blood specimen"};
 
   static void reloadIncludeExclude() {
     includedResources.clear();
@@ -343,6 +402,28 @@ public class FhirR4 {
   }
 
 
+  private static Table<String, String, String> loadMapping(String filename) {
+    Table<String, String, String> mappingTable = HashBasedTable.create();
+
+    List<LinkedHashMap<String, String>> csvData;
+    try {
+      csvData = SimpleCSV.parse(Utilities.readResource(filename));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+    for (LinkedHashMap<String, String> line : csvData) {
+      String system = line.get("SYSTEM");
+      String code = line.get("CODE");
+      String url = line.get("URL");
+
+      mappingTable.put(system, code, url);
+    }
+
+    return mappingTable;
+  }
+
   private static Map<String, Table<String, String, String>>
       loadMappingWithVersions(String filename, String... supportedVersions) {
     Map<String, Table<String,String,String>> versions = new HashMap<>();
@@ -365,15 +446,17 @@ public class FhirR4 {
       String url = line.get("URL");
       String version = line.get("VERSION");
 
-      for (Entry<String, Table<String, String, String>> e : versions.entrySet()) {
-        String versionKey = e.getKey();
-        Table<String, String, String> mappingTable = e.getValue();
-
-        if (StringUtils.isBlank(version) || version.contains(versionKey)) {
-          // blank means applies to ALL versions
-          // version.contains allows for things like "4,5,6"
-          mappingTable.put(system, code, url);
+      if (StringUtils.isBlank(version)) {
+        // blank means applies to ALL versions
+        versions.values().forEach(table -> table.put(system, code, url));
+      } else {
+        Table<String, String, String> mappingTable = versions.get(version);
+        if (mappingTable == null) {
+          throw new IllegalArgumentException("Error in loading mapping from file " + filename
+              + ". File contains row with version '" + version
+              + "' but supported version numbers are: " + String.join(",", supportedVersions));
         }
+        mappingTable.put(system, code, url);
       }
     }
 
@@ -407,7 +490,7 @@ public class FhirR4 {
 
       if (shouldExport(Condition.class)) {
         for (HealthRecord.Entry condition : encounter.conditions) {
-          condition(person, personEntry, bundle, encounterEntry, condition);
+          condition(personEntry, bundle, encounterEntry, condition);
         }
       }
 
@@ -434,7 +517,7 @@ public class FhirR4 {
 
       if (shouldExport(org.hl7.fhir.r4.model.Procedure.class)) {
         for (Procedure procedure : encounter.procedures) {
-          procedure(person, personEntry, bundle, encounterEntry, procedure);
+          procedure(personEntry, bundle, encounterEntry, procedure);
         }
       }
 
@@ -577,7 +660,7 @@ public class FhirR4 {
       Code passportCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "PPN", "Passport Number");
       patientResource.addIdentifier()
           .setType(mapCodeToCodeableConcept(passportCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
-          .setSystem(PASSPORT_URI)
+          .setSystem(SHR_EXT + "passportNumber")
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
     }
 
@@ -833,6 +916,29 @@ public class FhirR4 {
     patientResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
         .setDiv(new XhtmlNode(NodeType.Element).setValue(generatedBySynthea)));
 
+    if (USE_SHR_EXTENSIONS) {
+
+      patientResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-entity-Patient"));
+
+      // Patient profile requires race, ethnicity, birthsex,
+      // MothersMaidenName, FathersName, Person-extension
+
+      patientResource.addExtension()
+          .setUrl(SHR_EXT + "shr-actor-FictionalPerson-extension")
+          .setValue(new BooleanType(true));
+
+      String fathersName = (String) person.attributes.get(Person.NAME_FATHER);
+      Extension fathersNameExtension = new Extension(
+          SHR_EXT + "shr-entity-FathersName-extension", new HumanName().setText(fathersName));
+      patientResource.addExtension(fathersNameExtension);
+
+      String ssn = (String) person.attributes.get(Person.IDENTIFIER_SSN);
+      Extension ssnExtension = new Extension(
+          SHR_EXT + "shr-demographics-SocialSecurityNumber-extension",
+          new StringType(ssn));
+      patientResource.addExtension(ssnExtension);
+    }
+
     // DALY and QALY values
     // we only write the last(current) one to the patient record
     Double dalyValue = (Double) person.attributes.get("most-recent-daly");
@@ -853,27 +959,6 @@ public class FhirR4 {
   }
 
   /**
-   * Add a code translation (if available) of the supplied source code to the
-   * supplied CodeableConcept.
-   * @param codeSystem the code system of the translated code
-   * @param from the source code
-   * @param to the CodeableConcept to add the translation to
-   * @param rand a source of randomness
-   */
-  private static void addTranslation(String codeSystem, Code from,
-          CodeableConcept to, RandomNumberGenerator rand) {
-    CodeMapper mapper = Exporter.getCodeMapper(codeSystem);
-    if (mapper != null && mapper.canMap(from)) {
-      Coding coding = new Coding();
-      Map.Entry<String, String> mappedCode = mapper.mapToCodeAndDescription(from, rand);
-      coding.setCode(mappedCode.getKey());
-      coding.setDisplay(mappedCode.getValue());
-      coding.setSystem(ExportHelper.getSystemURI("ICD10-CM"));
-      to.addCoding(coding);
-    }
-  }
-
-  /**
    * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
    *
    * @param personEntry Entry for the Person
@@ -889,6 +974,15 @@ public class FhirR4 {
       meta.addProfile(
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter");
       encounterResource.setMeta(meta);
+    } else if (USE_SHR_EXTENSIONS) {
+      encounterResource.setMeta(
+          new Meta().addProfile(SHR_EXT + "shr-encounter-EncounterPerformed"));
+      Extension performedContext = new Extension();
+      performedContext.setUrl(SHR_EXT + "shr-action-PerformedContext-extension");
+      performedContext.addExtension(
+          SHR_EXT + "shr-action-Status-extension",
+          new CodeType("finished"));
+      encounterResource.addExtension(performedContext);
     }
 
     Patient patient = (Patient) personEntry.getResource();
@@ -918,8 +1012,6 @@ public class FhirR4 {
     if (encounter.reason != null) {
       encounterResource.addReasonCode().addCoding().setCode(encounter.reason.code)
           .setDisplay(encounter.reason.display).setSystem(SNOMED_URI);
-      addTranslation("ICD10-CM", encounter.reason,
-              encounterResource.getReasonCodeFirstRep(), person);
     }
 
     Provider provider = encounter.provider;
@@ -1633,14 +1725,13 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent condition(
-          RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           HealthRecord.Entry condition) {
     Condition conditionResource = new Condition();
 
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
-      if (useUSCore5() || useUSCore6()) {
+      if (useUSCore5()) {
         meta.addProfile(
             "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis");
       } else {
@@ -1651,15 +1742,18 @@ public class FhirR4 {
       conditionResource.addCategory(new CodeableConcept().addCoding(new Coding(
           "http://terminology.hl7.org/CodeSystem/condition-category", "encounter-diagnosis",
           "Encounter Diagnosis")));
+    } else if (USE_SHR_EXTENSIONS) {
+      conditionResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-condition-Condition"));
+      conditionResource.addCategory(new CodeableConcept().addCoding(new Coding(
+          "http://standardhealthrecord.org/shr/condition/vs/ConditionCategoryVS", "disease",
+          "Disease")));
     }
 
     conditionResource.setSubject(new Reference(personEntry.getFullUrl()));
     conditionResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
 
     Code code = condition.codes.get(0);
-    CodeableConcept concept = mapCodeToCodeableConcept(code, SNOMED_URI);
-    addTranslation("ICD10-CM", code, concept, rand);
-    conditionResource.setCode(concept);
+    conditionResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
 
     CodeableConcept verification = new CodeableConcept();
     verification.getCodingFirstRep()
@@ -1868,57 +1962,48 @@ public class FhirR4 {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
 
-      if (observation.category != null) {
-        if (useUSCore6()) {
-          switch (observation.category) {
-            case "imaging":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-result");
-              break;
-            case "social-history":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-simple-observation");
-              break;
-            case "survey":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment");
-              break;
-            case "exam":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-result");
-              break;
-            case "laboratory":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
-              break;
-            default:
-              // do nothing
-          }
-        } else if (useUSCore5()) {
-          switch (observation.category) {
-            case "imaging":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-imaging");
-              break;
-            case "social-history":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-social-history");
-              break;
-            case "survey":
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-survey");
-              // note that the -sdoh-assessment profile is a subset of -survey,
-              // those are handled by code in US_CORE_MAPPING above
-              break;
-            case "exam":
-              // this one is a little nebulous -- are all exams also clinical tests?
-              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-test");
+      if (useUSCore5() && observation.category != null) {
+        switch (observation.category) {
+          case "imaging":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-imaging");
+            break;
+          case "social-history":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-social-history");
+            break;
+          case "survey":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-survey");
+            // note that the -sdoh-assessment profile is a subset of -survey,
+            // those are handled by code in US_CORE_MAPPING above
+            break;
+          case "exam":
+            // this one is a little nebulous -- are all exams also clinical tests?
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-test");
 
-              observationResource.addCategory().addCoding().setCode("clinical-test")
-                  .setSystem("http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category")
-                  .setDisplay("Clinical Test");
-              break;
-            default:
-              // do nothing
-          }
+            observationResource.addCategory().addCoding().setCode("clinical-test")
+                .setSystem("http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category")
+                .setDisplay("Clinical Test");
+            break;
+          default:
+            // do nothing
         }
       }
 
       if (meta.hasProfile()) {
         observationResource.setMeta(meta);
       }
+    }
+    if (USE_SHR_EXTENSIONS) {
+      Meta meta = new Meta();
+      meta.addProfile(SHR_EXT + "shr-finding-Observation"); // all Observations are Observations
+      if ("vital-signs".equals(observation.category)) {
+        meta.addProfile(SHR_EXT + "shr-vital-VitalSign");
+      }
+      // add the specific profile based on code
+      String codeMappingUri = SHR_MAPPING.get(LOINC_URI, code.code);
+      if (codeMappingUri != null) {
+        meta.addProfile(codeMappingUri);
+      }
+      observationResource.setMeta(meta);
     }
 
     BundleEntryComponent entry = newEntry(bundle, observationResource, observation.uuid.toString());
@@ -1993,14 +2078,13 @@ public class FhirR4 {
   /**
    * Map the given Procedure into a FHIR Procedure resource, and add it to the given Bundle.
    *
-   * @param person         The Person
    * @param personEntry    The Person entry
    * @param bundle         Bundle to add to
    * @param encounterEntry The current Encounter entry
    * @param procedure      The Procedure
    * @return The added Entry
    */
-  private static BundleEntryComponent procedure(Person person,
+  private static BundleEntryComponent procedure(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Procedure procedure) {
     org.hl7.fhir.r4.model.Procedure procedureResource = new org.hl7.fhir.r4.model.Procedure();
@@ -2043,8 +2127,22 @@ public class FhirR4 {
         // we didn't find a matching Condition,
         // fallback to just reason code
         procedureResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
-        addTranslation("ICD10-CM", reason, procedureResource.getReasonCodeFirstRep(), person);
       }
+    }
+
+    if (USE_SHR_EXTENSIONS) {
+      procedureResource.setMeta(
+          new Meta().addProfile(SHR_EXT + "shr-procedure-ProcedurePerformed"));
+      // required fields for this profile are action-PerformedContext-extension,
+      // status, code, subject, performed[x]
+
+      Extension performedContext = new Extension();
+      performedContext.setUrl(SHR_EXT + "shr-action-PerformedContext-extension");
+      performedContext.addExtension(
+          SHR_EXT + "shr-action-Status-extension",
+          new CodeType("completed"));
+
+      procedureResource.addExtension(performedContext);
     }
 
     BundleEntryComponent procedureEntry =
@@ -2235,8 +2333,15 @@ public class FhirR4 {
       meta.addProfile(
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization");
       immResource.setMeta(meta);
+    } else if (USE_SHR_EXTENSIONS) {
+      immResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-immunization-ImmunizationGiven"));
+      Extension performedContext = new Extension();
+      performedContext.setUrl(SHR_EXT + "shr-action-PerformedContext-extension");
+      performedContext.addExtension(
+          SHR_EXT + "shr-action-Status-extension",
+          new CodeType("completed"));
+      immResource.addExtension(performedContext);
     }
-
     immResource.setStatus(ImmunizationStatus.COMPLETED);
     immResource.setOccurrence(convertFhirDateTime(immunization.start, true));
     immResource.setVaccineCode(mapCodeToCodeableConcept(immunization.codes.get(0), CVX_URI));
@@ -2280,8 +2385,24 @@ public class FhirR4 {
       Code category = new Code("http://terminology.hl7.org/CodeSystem/medicationrequest-category",
           "community", "Community");
       medicationResource.addCategory(mapCodeToCodeableConcept(category, null));
-    }
+    } else if (USE_SHR_EXTENSIONS) {
+      medicationResource.addExtension()
+        .setUrl(SHR_EXT + "shr-base-ActionCode-extension")
+        .setValue(PRESCRIPTION_OF_DRUG_CC);
 
+      medicationResource.setMeta(new Meta()
+          .addProfile(SHR_EXT + "shr-medication-MedicationRequested"));
+
+      Extension requestedContext = new Extension();
+      requestedContext.setUrl(SHR_EXT + "shr-action-RequestedContext-extension");
+      requestedContext.addExtension(
+          SHR_EXT + "shr-action-Status-extension",
+          new CodeType("completed"));
+      requestedContext.addExtension(
+          SHR_EXT + "shr-action-RequestIntent-extension",
+          new CodeType("original-order"));
+      medicationResource.addExtension(requestedContext);
+    }
     medicationResource.setSubject(new Reference(personEntry.getFullUrl()));
     medicationResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
 
@@ -2335,7 +2456,7 @@ public class FhirR4 {
     medicationResource.setRequester(encounterResource.getParticipantFirstRep().getIndividual());
 
     if (medication.stop != 0L) {
-      medicationResource.setStatus(MedicationRequestStatus.COMPLETED);
+      medicationResource.setStatus(MedicationRequestStatus.STOPPED);
     } else {
       medicationResource.setStatus(MedicationRequestStatus.ACTIVE);
     }
@@ -2353,8 +2474,6 @@ public class FhirR4 {
         // we didn't find a matching Condition,
         // fallback to just reason code
         medicationResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
-        addTranslation("ICD10-CM", reason, medicationResource.getReasonCodeFirstRep(),
-                person);
       }
     }
 
@@ -2379,6 +2498,7 @@ public class FhirR4 {
             rxInfo.get("dosage").getAsJsonObject().get("period").getAsDouble());
         timingRepeatComponent.setPeriodUnit(
             convertUcumCode(rxInfo.get("dosage").getAsJsonObject().get("unit").getAsString()));
+        
         timing.setRepeat(timingRepeatComponent);
         dosage.setTiming(timing);
 
@@ -2407,10 +2527,8 @@ public class FhirR4 {
             text.append(instructionCode.display).append('\n');
             dosage.addAdditionalInstruction(mapCodeToCodeableConcept(instructionCode, SNOMED_URI));
           }
-          if (text.length() > 0) {
-            text.deleteCharAt(text.length() - 1); // delete the last newline char
-            dosage.setText(text.toString());
-          }
+          text.deleteCharAt(text.length() - 1); // delete the last newline char
+          dosage.setText(text.toString());
         }
       }
 
@@ -2418,7 +2536,7 @@ public class FhirR4 {
       dosageInstruction.add(dosage);
       medicationResource.setDosageInstruction(dosageInstruction);
 
-      // Dispense request calculations
+      // New Code
       MedicationRequest.MedicationRequestDispenseRequestComponent dispenseRequest = 
           new MedicationRequest.MedicationRequestDispenseRequestComponent();
       
@@ -2565,8 +2683,6 @@ public class FhirR4 {
         // we didn't find a matching Condition,
         // fallback to just reason code
         medicationResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
-        addTranslation("ICD10-CM", reason, medicationResource.getReasonCodeFirstRep(),
-                person);
       }
     }
 
@@ -2576,6 +2692,11 @@ public class FhirR4 {
         newEntry(bundle, medicationResource, medicationAdminUUID);
     return medicationAdminEntry;
   }
+
+  private static final Code PRESCRIPTION_OF_DRUG_CODE =
+      new Code("SNOMED-CT", "33633005", "Prescription of drug (procedure)");
+  private static final CodeableConcept PRESCRIPTION_OF_DRUG_CC =
+      mapCodeToCodeableConcept(PRESCRIPTION_OF_DRUG_CODE, SNOMED_URI);
 
   /**
    * Map the given Report to a FHIR DiagnosticReport resource, and add it to the given Bundle.
@@ -2614,16 +2735,88 @@ public class FhirR4 {
     reportResource.setEffective(convertFhirDateTime(report.start, true));
     reportResource.setIssued(new Date(report.start));
 
+    // Create specimen and link to report (only for lab reports)
+    BundleEntryComponent specimenEntry = null;
+    if (labsOnly && shouldExport(Specimen.class)) {
+      specimenEntry = specimen(personEntry, bundle, report);
+      reportResource.addSpecimen(new Reference(specimenEntry.getFullUrl()));
+    }
+
     if (shouldExport(org.hl7.fhir.r4.model.Observation.class)) {
       // if observations are not exported, we can't reference them
       for (Observation observation : report.observations) {
         Reference reference = new Reference(observation.fullUrl);
         reference.setDisplay(observation.codes.get(0).display);
         reportResource.addResult(reference);
+
+        // Link specimen to observation
+        if (specimenEntry != null) {
+          org.hl7.fhir.r4.model.Observation obsResource =
+              (org.hl7.fhir.r4.model.Observation) findResourceInBundle(bundle, observation.fullUrl);
+          if (obsResource != null) {
+            obsResource.setSpecimen(new Reference(specimenEntry.getFullUrl()));
+          }
+        }
       }
     }
 
     return newEntry(bundle, reportResource, report.uuid.toString());
+  }
+
+  /**
+   * Create a FHIR Specimen resource for a lab report.
+   *
+   * @param personEntry    Reference to the patient
+   * @param bundle         The FHIR bundle to add to
+   * @param report         The lab report containing specimen info
+   * @return The bundle entry for the specimen
+   */
+  private static BundleEntryComponent specimen(BundleEntryComponent personEntry, Bundle bundle,
+      Report report) {
+    Specimen specimenResource = new Specimen();
+
+    // Set subject (patient reference)
+    specimenResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+    // Set specimen type based on LOINC code mapping
+    String loincCode = report.codes.get(0).code;
+    String[] specimenInfo = LOINC_TO_SPECIMEN.getOrDefault(loincCode, DEFAULT_SPECIMEN);
+
+    CodeableConcept specimenType = new CodeableConcept();
+    specimenType.addCoding(new Coding()
+        .setSystem(SNOMED_URI)
+        .setCode(specimenInfo[0])
+        .setDisplay(specimenInfo[1]));
+    specimenResource.setType(specimenType);
+
+    // Set collection information
+    Specimen.SpecimenCollectionComponent collection = new Specimen.SpecimenCollectionComponent();
+    collection.setCollected(convertFhirDateTime(report.start, true));
+    specimenResource.setCollection(collection);
+
+    // Set status
+    specimenResource.setStatus(Specimen.SpecimenStatus.AVAILABLE);
+
+    // Set received time (same as collection for synthetic data)
+    specimenResource.setReceivedTime(new Date(report.start));
+
+    return newEntry(bundle, specimenResource, report.uuid.toString() + "-specimen");
+  }
+
+  /**
+   * Find a resource in the bundle by its fullUrl.
+   *
+   * @param bundle  The bundle to search
+   * @param fullUrl The fullUrl to find
+   * @return The resource if found, null otherwise
+   */
+  private static Resource findResourceInBundle(Bundle bundle, String fullUrl) {
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getFullUrl().equals(fullUrl)) {
+        return entry.getResource();
+      }
+    }
+    return null;
   }
 
   /**
@@ -2810,8 +3003,6 @@ public class FhirR4 {
           activityDetailComponent.addReasonReference().setReference(reasonCondition.getFullUrl());
         } else if (reason != null) {
           activityDetailComponent.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
-          addTranslation("ICD10-CM", reason, activityDetailComponent.getReasonCodeFirstRep(),
-                  person);
         }
 
         activityComponent.setDetail(activityDetailComponent);
@@ -2958,9 +3149,7 @@ public class FhirR4 {
 
     if (carePlan.reasons != null && !carePlan.reasons.isEmpty()) {
       for (Code code : carePlan.reasons) {
-        CodeableConcept concept = mapCodeToCodeableConcept(code, SNOMED_URI);
-        addTranslation("ICD10-CM", code, concept, person);
-        careTeam.addReasonCode(concept);
+        careTeam.addReasonCode(mapCodeToCodeableConcept(code, SNOMED_URI));
       }
     }
 
@@ -3174,8 +3363,13 @@ public class FhirR4 {
       meta.addProfile(
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization");
       organizationResource.setMeta(meta);
+    } else if (USE_SHR_EXTENSIONS) {
+      organizationResource.setMeta(new Meta().addProfile(SHR_EXT + "shr-entity-Organization"));
+      organizationResource.addIdentifier()
+          .setSystem("urn:ietf:rfc:3986")
+          .setValue("urn:uuid" + provider.getResourceID());
+      organizationResource.addContact().setName(new HumanName().setText("Synthetic Provider"));
     }
-
     List<CodeableConcept> organizationType = new ArrayList<CodeableConcept>();
     organizationType.add(
         mapCodeToCodeableConcept(
@@ -3442,7 +3636,7 @@ public class FhirR4 {
    * @param system The system identifier, such as a URI. Optional; may be null.
    * @return The converted CodeableConcept
    */
-  public static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
+  private static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
     CodeableConcept to = new CodeableConcept();
     system = system == null ? null : ExportHelper.getSystemURI(system);
     from.system = ExportHelper.getSystemURI(from.system);
@@ -3459,7 +3653,6 @@ public class FhirR4 {
     } else {
       coding.setSystem(from.system);
     }
-    coding.setVersion(from.version); // may be null
 
     to.addCoding(coding);
 
