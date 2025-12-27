@@ -76,13 +76,18 @@
           ]
         },
         {
+          "remarks": [
+            "Updated based on 2023 Medicare Part D data. Oxycodone (8.4M claims) dominates",
+            "for chronic pain. Methadone (583K claims) primarily used for OUD treatment,",
+            "representing ~7% of strong opioid prescriptions for pain management."
+          ],
           "distributions": [
             {
-              "distribution": 0.6,
+              "distribution": 0.93,
               "transition": "Prescribe_Oxycodone"
             },
             {
-              "distribution": 0.4,
+              "distribution": 0.07,
               "transition": "Prescribe_Methadone"
             }
           ]

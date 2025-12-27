@@ -77,17 +77,22 @@
           ]
         },
         {
+          "remarks": [
+            "Updated based on 2023 Medicare Part D data. Hydrocodone/APAP dominates at 37%,",
+            "Oxycodone/APAP at 16%. Meperidine use has declined to <1% due to safety concerns.",
+            "Tramadol (24%) not included in this module - considered for future addition."
+          ],
           "distributions": [
             {
-              "distribution": 0.4,
+              "distribution": 0.02,
               "transition": "Prescribe_Meperidine"
             },
             {
-              "distribution": 0.3,
+              "distribution": 0.30,
               "transition": "Prescribe_Oxycodone_Acetaminophen"
             },
             {
-              "distribution": 0.3,
+              "distribution": 0.68,
               "transition": "Prescribe_Hydrocodone_Acetaminophen"
             }
           ]

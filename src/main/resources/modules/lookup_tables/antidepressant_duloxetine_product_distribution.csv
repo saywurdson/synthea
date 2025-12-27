@@ -1,0 +1,7 @@
+age,gender,state,Prescribe_Duloxetine_20_Mg_Delayed_Release_Oral_Capsule,Prescribe_Duloxetine_30_Mg_Delayed_Release_Oral_Capsule,Prescribe_Duloxetine_60_Mg_Delayed_Release_Oral_Capsule
+0-17,M,*,0.30,0.50,0.20
+0-17,F,*,0.30,0.50,0.20
+18-64,M,*,0.10,0.30,0.60
+18-64,F,*,0.10,0.30,0.60
+65-103,M,*,0.15,0.35,0.50
+65-103,F,*,0.15,0.35,0.50

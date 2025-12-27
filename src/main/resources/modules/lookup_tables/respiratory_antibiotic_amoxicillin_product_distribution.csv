@@ -1,0 +1,7 @@
+age,gender,state,Prescribe_Amoxicillin_250_Mg_Oral_Capsule,Prescribe_Amoxicillin_500_Mg_Oral_Capsule,Prescribe_Amoxicillin_875_Mg_Oral_Tablet
+0-17,M,*,0.60,0.30,0.10
+0-17,F,*,0.60,0.30,0.10
+18-64,M,*,0.10,0.50,0.40
+18-64,F,*,0.10,0.50,0.40
+65-103,M,*,0.15,0.45,0.40
+65-103,F,*,0.15,0.45,0.40

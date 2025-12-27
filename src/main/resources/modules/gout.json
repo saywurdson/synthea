@@ -179,37 +179,17 @@
       ]
     },
     "Strong_NSAID": {
-      "type": "MedicationOrder",
-      "assign_to_attribute": "gout_nsaid",
-      "reason": "Gout",
+      "type": "CallSubmodule",
+      "submodule": "medications/nsaid",
       "remarks": [
-        "A stronger NSAID pain reliever than the basic Aleve."
+        "NSAIDs are used to quickly alleviate the pain and inflammation of gout.",
+        "Uses the NSAID submodule for age-appropriate medication selection."
       ],
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "198014",
-          "display": "Naproxen 500 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 2,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 30,
-          "unit": "days"
-        },
-        "refills": 11
-      },
       "direct_transition": "Uric_Acid_Reducer"
     },
     "Colchicine": {
       "type": "MedicationOrder",
-      "assign_to_attribute": "gout_nsaid",
+      "assign_to_attribute": "nsaid_prescription",
       "reason": "Gout",
       "remarks": [
         "For those who can't stand the side effects of a strong NSAID."
@@ -276,7 +256,7 @@
     },
     "End_Gout_Nonopioid": {
       "type": "MedicationEnd",
-      "referenced_by_attribute": "gout_nsaid",
+      "referenced_by_attribute": "nsaid_prescription",
       "direct_transition": "End_Uric_Acid_Reducer"
     },
     "End_Uric_Acid_Reducer": {

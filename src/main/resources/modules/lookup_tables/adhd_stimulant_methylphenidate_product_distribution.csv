@@ -1,0 +1,7 @@
+age,gender,state,Prescribe_Methylphenidate_18_Mg_Extended_Release_Oral_Tablet,Prescribe_Methylphenidate_27_Mg_Extended_Release_Oral_Tablet,Prescribe_Methylphenidate_36_Mg_Extended_Release_Oral_Tablet,Prescribe_Methylphenidate_54_Mg_Extended_Release_Oral_Tablet
+0-17,M,*,0.35,0.30,0.25,0.10
+0-17,F,*,0.35,0.30,0.25,0.10
+18-64,M,*,0.15,0.25,0.35,0.25
+18-64,F,*,0.15,0.25,0.35,0.25
+65-103,M,*,0.30,0.30,0.25,0.15
+65-103,F,*,0.30,0.30,0.25,0.15

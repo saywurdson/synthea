@@ -1,0 +1,409 @@
+{
+    "name": "Respiratory Antibiotic",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE RESPIRATORY ANTIBIOTIC",
+        "======================================================================",
+        "",
+        "This submodule prescribes antibiotics commonly used for respiratory",
+        "infections (sinusitis, bronchitis, pneumonia, strep throat).",
+        "",
+        "Age-appropriate formulations are selected based on MEPS 2022 data:",
+        "  - Pediatric (0-17): Amoxicillin dominates (75%), azithromycin/augmentin secondary",
+        "  - Adult (18-64): More balanced - amoxicillin 42%, azithromycin 34%",
+        "  - Elderly (65+): Similar to adult, azithromycin slightly higher (38%)",
+        "  - Doxycycline: Rarely used in children (<1%), ~10% in adults/elderly",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'respiratory_antibiotic'.",
+        "",
+        "Data sources:",
+        "  - AHRQ MEPS 2022 prescription data",
+        "  - RxNorm for drug codes"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "respiratory_antibiotic",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "remarks": [
+                "======================================================================",
+                " MEDICATION INGREDIENT TABLE TRANSITION                               ",
+                "======================================================================",
+                "Based on MEPS 2022 data:",
+                "Pediatric: Amoxicillin 75%, Azithromycin 12%, Augmentin 12%, Doxycycline 1%",
+                "Adult: Amoxicillin 42%, Azithromycin 34%, Augmentin 15%, Doxycycline 9%",
+                "Elderly: Amoxicillin 40%, Azithromycin 38%, Augmentin 12%, Doxycycline 10%"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Amoxicillin",
+                    "default_probability": "1",
+                    "lookup_table_name": "respiratory_antibiotic_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Azithromycin",
+                    "default_probability": "0",
+                    "lookup_table_name": "respiratory_antibiotic_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amoxicillin_Clavulanate",
+                    "default_probability": "0",
+                    "lookup_table_name": "respiratory_antibiotic_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Doxycycline",
+                    "default_probability": "0",
+                    "lookup_table_name": "respiratory_antibiotic_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Amoxicillin": {
+            "name": "Prescribe_Amoxicillin",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Amoxicillin_250_Mg_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "respiratory_antibiotic_amoxicillin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amoxicillin_500_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "respiratory_antibiotic_amoxicillin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amoxicillin_875_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "respiratory_antibiotic_amoxicillin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Azithromycin": {
+            "name": "Prescribe_Azithromycin",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Azithromycin_250_Mg_Oral_Tablet_Zpack",
+                    "default_probability": "1",
+                    "lookup_table_name": "respiratory_antibiotic_azithromycin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Azithromycin_500_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "respiratory_antibiotic_azithromycin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Amoxicillin_Clavulanate": {
+            "name": "Prescribe_Amoxicillin_Clavulanate",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Amoxicillin_500_Mg_Clavulanate_125_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "respiratory_antibiotic_amoxicillin_clavulanate_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amoxicillin_875_Mg_Clavulanate_125_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "respiratory_antibiotic_amoxicillin_clavulanate_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Doxycycline": {
+            "name": "Prescribe_Doxycycline",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Doxycycline_Hyclate_100_Mg_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "respiratory_antibiotic_doxycycline_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Doxycycline_Monohydrate_100_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "respiratory_antibiotic_doxycycline_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Amoxicillin_250_Mg_Oral_Capsule": {
+            "name": "Prescribe_Amoxicillin_250_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "308182",
+                    "display": "amoxicillin 250 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amoxicillin_500_Mg_Oral_Capsule": {
+            "name": "Prescribe_Amoxicillin_500_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "308191",
+                    "display": "amoxicillin 500 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amoxicillin_875_Mg_Oral_Tablet": {
+            "name": "Prescribe_Amoxicillin_875_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "308194",
+                    "display": "amoxicillin 875 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Azithromycin_250_Mg_Oral_Tablet_Zpack": {
+            "name": "Prescribe_Azithromycin_250_Mg_Oral_Tablet_Zpack",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "remarks": [
+                "Z-Pack: 6 tablets, 500mg day 1, then 250mg days 2-5"
+            ],
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "749783",
+                    "display": "{6 (azithromycin 250 MG Oral Tablet) } Pack"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 5,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Azithromycin_500_Mg_Oral_Tablet": {
+            "name": "Prescribe_Azithromycin_500_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "248656",
+                    "display": "azithromycin 500 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 3,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amoxicillin_500_Mg_Clavulanate_125_Mg_Oral_Tablet": {
+            "name": "Prescribe_Amoxicillin_500_Mg_Clavulanate_125_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "617296",
+                    "display": "amoxicillin 500 MG / clavulanate 125 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amoxicillin_875_Mg_Clavulanate_125_Mg_Oral_Tablet": {
+            "name": "Prescribe_Amoxicillin_875_Mg_Clavulanate_125_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "remarks": [
+                "Augmentin 875mg - commonly used for resistant respiratory infections"
+            ],
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "562251",
+                    "display": "amoxicillin 250 MG / clavulanate 125 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Doxycycline_Hyclate_100_Mg_Oral_Capsule": {
+            "name": "Prescribe_Doxycycline_Hyclate_100_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1649988",
+                    "display": "doxycycline hyclate 100 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 7,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Doxycycline_Monohydrate_100_Mg_Oral_Capsule": {
+            "name": "Prescribe_Doxycycline_Monohydrate_100_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "respiratory_antibiotic",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1649990",
+                    "display": "doxycycline monohydrate 100 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 7,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        }
+    }
+}

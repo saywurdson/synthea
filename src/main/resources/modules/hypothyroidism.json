@@ -180,28 +180,12 @@
       }
     },
     "Synthroid Medication Order": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 966222,
-          "display": "Levothyroxine Sodium 0.075 MG Oral Tablet"
-        }
+      "type": "CallSubmodule",
+      "submodule": "medications/thyroid",
+      "remarks": [
+        "Uses the thyroid submodule for age-appropriate levothyroxine strength selection."
       ],
-      "direct_transition": "end encounter",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 60,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 60,
-          "unit": "days"
-        },
-        "refills": 6
-      }
+      "direct_transition": "end encounter"
     },
     "end encounter": {
       "type": "EncounterEnd",

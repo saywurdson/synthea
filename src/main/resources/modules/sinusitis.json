@@ -202,17 +202,11 @@
       ]
     },
     "Prescribe_Antibiotic": {
-      "type": "MedicationOrder",
+      "type": "CallSubmodule",
+      "submodule": "medications/respiratory_antibiotic",
       "remarks": [
+        "Uses the respiratory antibiotic submodule for age-appropriate medication selection.",
         "https://www.drugs.com/dosage/amoxicillin.html#Usual_Adult_Dose_for_Sinusitis"
-      ],
-      "reason": "Sinusitis Condition",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "562251",
-          "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
-        }
       ],
       "direct_transition": "End_Encounter"
     },
@@ -233,14 +227,9 @@
             "condition_type": "And",
             "conditions": [
               {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": "562251",
-                    "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
-                  }
-                ]
+                "condition_type": "Attribute",
+                "attribute": "respiratory_antibiotic",
+                "operator": "is not nil"
               },
               {
                 "condition_type": "Active Condition",
@@ -280,14 +269,9 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": "562251",
-                "display": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "respiratory_antibiotic",
+            "operator": "is not nil"
           },
           "transition": "End_Antibiotic"
         },
@@ -298,7 +282,7 @@
     },
     "End_Antibiotic": {
       "type": "MedicationEnd",
-      "medication_order": "Prescribe_Antibiotic",
+      "referenced_by_attribute": "respiratory_antibiotic",
       "direct_transition": "Symptom1_Subsides"
     },
     "Symptom1_Subsides": {

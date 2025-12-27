@@ -127,28 +127,8 @@
       "direct_transition": "Assign DME"
     },
     "OA_Pain_Medication": {
-      "type": "MedicationOrder",
-      "reason": "osteoarthritis",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "849574",
-          "display": "Naproxen sodium 220 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 2,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 30,
-          "unit": "days"
-        },
-        "refills": 11
-      },
+      "type": "CallSubmodule",
+      "submodule": "medications/nsaid",
       "remarks": [
         "For knees or hips we can consider joint replacement surgery. However this is not a ",
         "treatment option for arthritis of the hand. The total_joint_replacement module will ",

@@ -1,0 +1,500 @@
+{
+    "name": "Antidepressant",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE ANTIDEPRESSANT (SSRI/SNRI)",
+        "======================================================================",
+        "",
+        "This submodule prescribes antidepressant medications based on population data.",
+        "",
+        "Distribution based on Medicare Part D data (2022):",
+        "  - Sertraline: 21.8% (most commonly prescribed)",
+        "  - Bupropion: 16.6%",
+        "  - Duloxetine: 15.9% (SNRI, also for pain)",
+        "  - Escitalopram: 13.6%",
+        "  - Venlafaxine: 9.7%",
+        "  - Citalopram: 9.6%",
+        "  - Fluoxetine: 7.3%",
+        "  - Paroxetine: 5.6%",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'antidepressant'.",
+        "",
+        "Data sources:",
+        "  - CMS Medicare Part D data (2022)",
+        "  - RxNorm for drug codes"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "antidepressant",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "remarks": [
+                "Top 4 antidepressants representing ~59% of prescriptions:",
+                "Sertraline 22%, Escitalopram 14%, Duloxetine 16%, Fluoxetine 7%"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Sertraline",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Escitalopram",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Duloxetine",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Fluoxetine",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Sertraline": {
+            "name": "Prescribe_Sertraline",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Sertraline_25_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_sertraline_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Sertraline_50_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_sertraline_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Sertraline_100_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_sertraline_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Escitalopram": {
+            "name": "Prescribe_Escitalopram",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Escitalopram_5_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_escitalopram_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Escitalopram_10_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_escitalopram_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Escitalopram_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_escitalopram_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Duloxetine": {
+            "name": "Prescribe_Duloxetine",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Duloxetine_20_Mg_Delayed_Release_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_duloxetine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Duloxetine_30_Mg_Delayed_Release_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_duloxetine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Duloxetine_60_Mg_Delayed_Release_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_duloxetine_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Fluoxetine": {
+            "name": "Prescribe_Fluoxetine",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Fluoxetine_10_Mg_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_fluoxetine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Fluoxetine_20_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_fluoxetine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Fluoxetine_40_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_fluoxetine_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Sertraline_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Sertraline_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "312940",
+                    "display": "sertraline 25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Sertraline_50_Mg_Oral_Tablet": {
+            "name": "Prescribe_Sertraline_50_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "312941",
+                    "display": "sertraline 50 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Sertraline_100_Mg_Oral_Tablet": {
+            "name": "Prescribe_Sertraline_100_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "312938",
+                    "display": "sertraline 100 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Escitalopram_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Escitalopram_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "351249",
+                    "display": "escitalopram 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Escitalopram_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Escitalopram_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "349332",
+                    "display": "escitalopram 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Escitalopram_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Escitalopram_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "351250",
+                    "display": "escitalopram 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Duloxetine_20_Mg_Delayed_Release_Oral_Capsule": {
+            "name": "Prescribe_Duloxetine_20_Mg_Delayed_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "596926",
+                    "display": "duloxetine 20 MG Delayed Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Duloxetine_30_Mg_Delayed_Release_Oral_Capsule": {
+            "name": "Prescribe_Duloxetine_30_Mg_Delayed_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "596930",
+                    "display": "duloxetine 30 MG Delayed Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Duloxetine_60_Mg_Delayed_Release_Oral_Capsule": {
+            "name": "Prescribe_Duloxetine_60_Mg_Delayed_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "596934",
+                    "display": "duloxetine 60 MG Delayed Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Fluoxetine_10_Mg_Oral_Capsule": {
+            "name": "Prescribe_Fluoxetine_10_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "310384",
+                    "display": "fluoxetine 10 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Fluoxetine_20_Mg_Oral_Capsule": {
+            "name": "Prescribe_Fluoxetine_20_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "310385",
+                    "display": "fluoxetine 20 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Fluoxetine_40_Mg_Oral_Capsule": {
+            "name": "Prescribe_Fluoxetine_40_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "antidepressant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "313989",
+                    "display": "fluoxetine 40 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        }
+    }
+}

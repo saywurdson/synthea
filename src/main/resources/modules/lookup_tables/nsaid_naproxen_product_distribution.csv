@@ -1,0 +1,7 @@
+age,gender,state,Prescribe_Naproxen_250_Mg_Oral_Tablet,Prescribe_Naproxen_375_Mg_Oral_Tablet,Prescribe_Naproxen_500_Mg_Oral_Tablet,Prescribe_Naproxen_Sodium_220_Mg_Oral_Tablet
+0-17,M,*,0.40,0.20,0.20,0.20
+0-17,F,*,0.40,0.20,0.20,0.20
+18-64,M,*,0.15,0.20,0.45,0.20
+18-64,F,*,0.15,0.20,0.45,0.20
+65-103,M,*,0.20,0.25,0.35,0.20
+65-103,F,*,0.20,0.25,0.35,0.20

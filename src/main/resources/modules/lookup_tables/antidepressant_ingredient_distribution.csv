@@ -1,0 +1,7 @@
+age,gender,state,Prescribe_Sertraline,Prescribe_Bupropion,Prescribe_Duloxetine,Prescribe_Escitalopram,Prescribe_Venlafaxine,Prescribe_Citalopram,Prescribe_Fluoxetine,Prescribe_Paroxetine
+0-17,M,*,0.25,0.10,0.05,0.22,0.05,0.08,0.20,0.05
+0-17,F,*,0.25,0.10,0.05,0.22,0.05,0.08,0.20,0.05
+18-64,M,*,0.22,0.18,0.12,0.16,0.10,0.08,0.08,0.06
+18-64,F,*,0.24,0.14,0.14,0.16,0.10,0.10,0.07,0.05
+65-103,M,*,0.22,0.17,0.16,0.14,0.10,0.10,0.07,0.04
+65-103,F,*,0.22,0.16,0.16,0.13,0.10,0.10,0.07,0.06

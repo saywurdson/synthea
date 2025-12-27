@@ -1,0 +1,7 @@
+age,gender,state,Prescribe_Amoxicillin,Prescribe_Azithromycin,Prescribe_Amoxicillin_Clavulanate,Prescribe_Doxycycline
+0-17,M,*,0.55,0.25,0.18,0.02
+0-17,F,*,0.55,0.25,0.18,0.02
+18-64,M,*,0.32,0.28,0.22,0.18
+18-64,F,*,0.32,0.28,0.22,0.18
+65-103,M,*,0.28,0.26,0.22,0.24
+65-103,F,*,0.28,0.26,0.22,0.24

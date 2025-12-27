@@ -148,17 +148,11 @@
       "direct_transition": "RA_Nonopioid_Pain_Medication"
     },
     "RA_Nonopioid_Pain_Medication": {
-      "type": "MedicationOrder",
-      "reason": "Rheumatoid_Arthritis",
+      "type": "CallSubmodule",
+      "submodule": "medications/nsaid",
       "remarks": [
-        "A stronger NSAID pain reliever than the basic Aleve."
-      ],
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "198014",
-          "display": "Naproxen 500 MG Oral Tablet"
-        }
+        "NSAIDs are used to alleviate the pain and inflammation of RA.",
+        "Uses the NSAID submodule for age-appropriate medication selection."
       ],
       "conditional_transition": [
         {
@@ -335,7 +329,7 @@
     },
     "End_RA_Nonopioid": {
       "type": "MedicationEnd",
-      "medication_order": "RA_Nonopioid_Pain_Medication",
+      "referenced_by_attribute": "nsaid_prescription",
       "direct_transition": "RA_Symptom1_Ends"
     },
     "RA_Symptom1_Ends": {

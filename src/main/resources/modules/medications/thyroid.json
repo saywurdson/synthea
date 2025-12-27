@@ -1,0 +1,226 @@
+{
+    "name": "Thyroid",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE THYROID (Levothyroxine)",
+        "======================================================================",
+        "",
+        "This submodule prescribes levothyroxine for hypothyroidism treatment.",
+        "Levothyroxine (Synthroid, Levoxyl) is the standard treatment for",
+        "hypothyroidism and one of the most commonly prescribed medications.",
+        "",
+        "Dosing is weight-based and titrated to TSH levels:",
+        "  - Typical starting dose: 25-50 mcg in elderly, 50-100 mcg in younger adults",
+        "  - Target dose: ~1.6 mcg/kg/day",
+        "",
+        "Usage increases with age due to higher hypothyroidism prevalence:",
+        "  - 65-74 age group: High volume",
+        "  - 75-84 age group: Highest volume",
+        "  - 85+: Continued high volume",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'thyroid_medication'.",
+        "",
+        "Data sources:",
+        "  - Medicare Part D data (2022)",
+        "  - RxNorm for drug codes"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "thyroid_medication",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Levothyroxine"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Levothyroxine": {
+            "name": "Prescribe_Levothyroxine",
+            "remarks": [
+                "Levothyroxine dosing varies by patient weight and TSH levels.",
+                "Distribution represents typical strengths prescribed across population."
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Levothyroxine_25_Mcg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "thyroid_levothyroxine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Levothyroxine_50_Mcg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "thyroid_levothyroxine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Levothyroxine_75_Mcg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "thyroid_levothyroxine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Levothyroxine_100_Mcg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "thyroid_levothyroxine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Levothyroxine_125_Mcg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "thyroid_levothyroxine_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Levothyroxine_25_Mcg_Oral_Tablet": {
+            "name": "Prescribe_Levothyroxine_25_Mcg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "thyroid_medication",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "966220",
+                    "display": "levothyroxine sodium 0.025 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 11,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Levothyroxine_50_Mcg_Oral_Tablet": {
+            "name": "Prescribe_Levothyroxine_50_Mcg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "thyroid_medication",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "966221",
+                    "display": "levothyroxine sodium 0.05 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 11,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Levothyroxine_75_Mcg_Oral_Tablet": {
+            "name": "Prescribe_Levothyroxine_75_Mcg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "thyroid_medication",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "966222",
+                    "display": "levothyroxine sodium 0.075 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 11,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Levothyroxine_100_Mcg_Oral_Tablet": {
+            "name": "Prescribe_Levothyroxine_100_Mcg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "thyroid_medication",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "892246",
+                    "display": "levothyroxine sodium 0.1 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 11,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Levothyroxine_125_Mcg_Oral_Tablet": {
+            "name": "Prescribe_Levothyroxine_125_Mcg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "thyroid_medication",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "966224",
+                    "display": "levothyroxine sodium 0.125 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 11,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        }
+    }
+}

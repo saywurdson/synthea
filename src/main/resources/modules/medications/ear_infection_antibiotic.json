@@ -148,13 +148,18 @@
           ]
         },
         {
+          "remarks": [
+            "Updated based on 2023 Medicaid data: Amoxicillin 41%, Azithromycin 28%,",
+            "Amox-Clav 18%, Cephalexin 9%, Cefdinir 3%. Module uses amoxicillin and",
+            "cefuroxime as primary options with cefdinir/azithromycin for allergies."
+          ],
           "distributions": [
             {
-              "distribution": 0.8,
+              "distribution": 0.75,
               "transition": "Prescribe_Amoxicillin"
             },
             {
-              "distribution": 0.2,
+              "distribution": 0.25,
               "transition": "Prescribe_Cefuroxime"
             }
           ]

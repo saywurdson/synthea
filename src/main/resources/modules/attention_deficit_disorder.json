@@ -327,30 +327,12 @@
       ]
     },
     "Ritalin": {
-      "type": "MedicationOrder",
-      "assign_to_attribute": "adhd_medication",
-      "reason": "ADHD",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1091392",
-          "display": "Methylphenidate Hydrochloride 20 MG Oral Tablet"
-        }
+      "type": "CallSubmodule",
+      "submodule": "medications/adhd_stimulant",
+      "remarks": [
+        "Uses the ADHD stimulant submodule for age-appropriate medication selection.",
+        "Includes methylphenidate, amphetamine mixed salts, and lisdexamfetamine."
       ],
-      "prescription": {
-          "refills": 11,
-          "as_needed": false,
-          "dosage": {
-              "amount": 1,
-              "frequency": 1,
-              "period": 1,
-              "unit": "days"
-          },
-          "duration": {
-              "quantity": 30,
-              "unit": "days"
-          }
-      },
       "distributed_transition": [
         {
           "distribution": 0.5,
@@ -460,6 +442,14 @@
         {
           "condition": {
             "condition_type": "Attribute",
+            "attribute": "adhd_stimulant",
+            "operator": "is not nil"
+          },
+          "transition": "End_ADHD_Stimulant"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
             "attribute": "adhd_medication",
             "operator": "is not nil"
           },
@@ -469,6 +459,11 @@
           "transition": "Terminal"
         }
       ]
+    },
+    "End_ADHD_Stimulant": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "adhd_stimulant",
+      "direct_transition": "Terminal"
     },
     "End_ADHD_Medication": {
       "type": "MedicationEnd",

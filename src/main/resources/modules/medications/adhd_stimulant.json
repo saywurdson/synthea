@@ -1,0 +1,338 @@
+{
+    "name": "ADHD Stimulant",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE ADHD STIMULANT",
+        "======================================================================",
+        "",
+        "This submodule prescribes stimulant medications for ADHD treatment.",
+        "",
+        "Medication classes included:",
+        "  - Methylphenidate (Concerta, Ritalin) - most common, ~45%",
+        "  - Mixed Amphetamine Salts (Adderall) - ~35%",
+        "  - Lisdexamfetamine (Vyvanse) - prodrug form, ~20%",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'adhd_stimulant'.",
+        "",
+        "Note: ADHD predominantly affects children and young adults. Medicare data",
+        "underrepresents this population. Distribution based on clinical literature",
+        "and CDC prescribing patterns."
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "adhd_stimulant",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Methylphenidate",
+                    "default_probability": "1",
+                    "lookup_table_name": "adhd_stimulant_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amphetamine_Mixed_Salts",
+                    "default_probability": "0",
+                    "lookup_table_name": "adhd_stimulant_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisdexamfetamine",
+                    "default_probability": "0",
+                    "lookup_table_name": "adhd_stimulant_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Methylphenidate": {
+            "name": "Prescribe_Methylphenidate",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Methylphenidate_18_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "adhd_stimulant_methylphenidate_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Methylphenidate_27_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "adhd_stimulant_methylphenidate_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Methylphenidate_36_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "adhd_stimulant_methylphenidate_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Methylphenidate_54_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "adhd_stimulant_methylphenidate_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Amphetamine_Mixed_Salts": {
+            "name": "Prescribe_Amphetamine_Mixed_Salts",
+            "remarks": ["Direct prescription - Adderall products"],
+            "type": "MedicationOrder",
+            "assign_to_attribute": "adhd_stimulant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "884655",
+                    "display": "amphetamine sulfate 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Lisdexamfetamine": {
+            "name": "Prescribe_Lisdexamfetamine",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Lisdexamfetamine_30_Mg_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "adhd_stimulant_lisdexamfetamine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisdexamfetamine_50_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "adhd_stimulant_lisdexamfetamine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisdexamfetamine_70_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "adhd_stimulant_lisdexamfetamine_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Methylphenidate_18_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_Methylphenidate_18_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "adhd_stimulant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1091155",
+                    "display": "24 HR methylphenidate hydrochloride 18 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Methylphenidate_27_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_Methylphenidate_27_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "adhd_stimulant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1091170",
+                    "display": "24 HR methylphenidate hydrochloride 27 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Methylphenidate_36_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_Methylphenidate_36_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "adhd_stimulant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1091185",
+                    "display": "24 HR methylphenidate hydrochloride 36 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Methylphenidate_54_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_Methylphenidate_54_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "adhd_stimulant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1091210",
+                    "display": "24 HR methylphenidate hydrochloride 54 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Lisdexamfetamine_30_Mg_Oral_Capsule": {
+            "name": "Prescribe_Lisdexamfetamine_30_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "adhd_stimulant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "854834",
+                    "display": "lisdexamfetamine dimesylate 30 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Lisdexamfetamine_50_Mg_Oral_Capsule": {
+            "name": "Prescribe_Lisdexamfetamine_50_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "adhd_stimulant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "854850",
+                    "display": "lisdexamfetamine dimesylate 50 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Lisdexamfetamine_70_Mg_Oral_Capsule": {
+            "name": "Prescribe_Lisdexamfetamine_70_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "adhd_stimulant",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "854842",
+                    "display": "lisdexamfetamine dimesylate 70 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        }
+    }
+}

@@ -1,0 +1,752 @@
+{
+    "name": "NSAID",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE NSAID (Non-Steroidal Anti-Inflammatory Drug)",
+        "======================================================================",
+        "",
+        "This submodule prescribes an NSAID medication based on population data.",
+        "Age-appropriate formulations are selected:",
+        "  - Pediatric (0-17): Primarily ibuprofen suspensions and chewables",
+        "  - Adult (18-64): Oral tablets, higher strengths available",
+        "  - Elderly (65+): GI-safer options preferred (meloxicam, topical diclofenac)",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'nsaid'.",
+        "",
+        "Reference links:",
+        "    RxClass: https://mor.nlm.nih.gov/RxClass/",
+        "    RxNorm: https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "    MEPS: https://meps.ahrq.gov/mepsweb/data_stats/MEPS_topics.jsp?topicid=46Z-1",
+        "    CMS Part D: https://data.cms.gov/",
+        "",
+        "Data sources used:",
+        "  - Medicare Part D prescribing data (elderly population)",
+        "  - Medicaid drug utilization (pediatric and low-income populations)",
+        "  - MEPS prescription survey (all age groups)",
+        "",
+        "Key findings from data analysis:",
+        "  - Pediatric: Ibuprofen dominates (89%), liquid suspensions preferred",
+        "  - Adult: Ibuprofen #1, Meloxicam #2, Naproxen #3",
+        "  - Elderly: Meloxicam #1 (better GI profile), topical diclofenac common"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "nsaid",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "remarks": [
+                "======================================================================",
+                " MEDICATION INGREDIENT TABLE TRANSITION                               ",
+                "======================================================================",
+                "Ingredients in lookup table vary by age:",
+                "Pediatric: Ibuprofen 89%, others minimal",
+                "Adult: Ibuprofen 35%, Meloxicam 30%, Naproxen 20%, Celecoxib 8%, Diclofenac 7%",
+                "Elderly: Meloxicam 35%, Diclofenac 20%, Ibuprofen 15%, Celecoxib 15%, Naproxen 15%"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Ibuprofen",
+                    "default_probability": "1",
+                    "lookup_table_name": "nsaid_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Meloxicam",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Naproxen",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Celecoxib",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Diclofenac",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Ibuprofen": {
+            "name": "Prescribe_Ibuprofen",
+            "remarks": [
+                "======================================================================",
+                " IBUPROFEN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Pediatric: Suspensions (20mg/mL, 40mg/mL) and chewables",
+                "Adult/Elderly: Oral tablets (200mg, 400mg, 600mg, 800mg)"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Ibuprofen_20_Mg_Ml_Oral_Suspension",
+                    "default_probability": "1",
+                    "lookup_table_name": "nsaid_ibuprofen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ibuprofen_40_Mg_Ml_Oral_Suspension",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ibuprofen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ibuprofen_100_Mg_Chewable_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ibuprofen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ibuprofen_200_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ibuprofen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ibuprofen_400_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ibuprofen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ibuprofen_600_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ibuprofen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ibuprofen_800_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_ibuprofen_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Meloxicam": {
+            "name": "Prescribe_Meloxicam",
+            "remarks": [
+                "======================================================================",
+                " MELOXICAM MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Once-daily dosing, preferred in elderly due to better GI profile"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Meloxicam_7_5_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "nsaid_meloxicam_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Meloxicam_15_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_meloxicam_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Naproxen": {
+            "name": "Prescribe_Naproxen",
+            "remarks": [
+                "======================================================================",
+                " NAPROXEN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Available as naproxen base and naproxen sodium"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Naproxen_250_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "nsaid_naproxen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Naproxen_375_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_naproxen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Naproxen_500_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_naproxen_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Naproxen_Sodium_220_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_naproxen_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Celecoxib": {
+            "name": "Prescribe_Celecoxib",
+            "remarks": [
+                "======================================================================",
+                " CELECOXIB MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "COX-2 selective inhibitor, lower GI risk than traditional NSAIDs"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Celecoxib_100_Mg_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "nsaid_celecoxib_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Celecoxib_200_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_celecoxib_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Diclofenac": {
+            "name": "Prescribe_Diclofenac",
+            "remarks": [
+                "======================================================================",
+                " DICLOFENAC MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Oral and topical formulations available",
+                "Topical gel preferred in elderly to minimize systemic effects"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Diclofenac_Sodium_50_Mg_Delayed_Release_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "nsaid_diclofenac_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Diclofenac_Sodium_75_Mg_Delayed_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_diclofenac_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Diclofenac_Sodium_1_Percent_Topical_Gel",
+                    "default_probability": "0",
+                    "lookup_table_name": "nsaid_diclofenac_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Ibuprofen_20_Mg_Ml_Oral_Suspension": {
+            "name": "Prescribe_Ibuprofen_20_Mg_Ml_Oral_Suspension",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197803",
+                    "display": "ibuprofen 20 MG/ML Oral Suspension"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ibuprofen_40_Mg_Ml_Oral_Suspension": {
+            "name": "Prescribe_Ibuprofen_40_Mg_Ml_Oral_Suspension",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "204442",
+                    "display": "ibuprofen 40 MG/ML Oral Suspension"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ibuprofen_100_Mg_Chewable_Tablet": {
+            "name": "Prescribe_Ibuprofen_100_Mg_Chewable_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "310963",
+                    "display": "ibuprofen 100 MG Chewable Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ibuprofen_200_Mg_Oral_Tablet": {
+            "name": "Prescribe_Ibuprofen_200_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "310965",
+                    "display": "ibuprofen 200 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ibuprofen_400_Mg_Oral_Tablet": {
+            "name": "Prescribe_Ibuprofen_400_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197805",
+                    "display": "ibuprofen 400 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ibuprofen_600_Mg_Oral_Tablet": {
+            "name": "Prescribe_Ibuprofen_600_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197806",
+                    "display": "ibuprofen 600 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ibuprofen_800_Mg_Oral_Tablet": {
+            "name": "Prescribe_Ibuprofen_800_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197807",
+                    "display": "ibuprofen 800 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 10,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Meloxicam_7_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Meloxicam_7_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "311486",
+                    "display": "meloxicam 7.5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Meloxicam_15_Mg_Oral_Tablet": {
+            "name": "Prescribe_Meloxicam_15_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "152695",
+                    "display": "meloxicam 15 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Naproxen_250_Mg_Oral_Tablet": {
+            "name": "Prescribe_Naproxen_250_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "198013",
+                    "display": "naproxen 250 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 2,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 14,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Naproxen_375_Mg_Oral_Tablet": {
+            "name": "Prescribe_Naproxen_375_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "198012",
+                    "display": "naproxen 375 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 2,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 14,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Naproxen_500_Mg_Oral_Tablet": {
+            "name": "Prescribe_Naproxen_500_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "198014",
+                    "display": "naproxen 500 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 2,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 14,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Naproxen_Sodium_220_Mg_Oral_Tablet": {
+            "name": "Prescribe_Naproxen_Sodium_220_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "849574",
+                    "display": "naproxen sodium 220 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 2,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 14,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Celecoxib_100_Mg_Oral_Capsule": {
+            "name": "Prescribe_Celecoxib_100_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "205322",
+                    "display": "celecoxib 100 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Celecoxib_200_Mg_Oral_Capsule": {
+            "name": "Prescribe_Celecoxib_200_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "205323",
+                    "display": "celecoxib 200 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Diclofenac_Sodium_50_Mg_Delayed_Release_Oral_Tablet": {
+            "name": "Prescribe_Diclofenac_Sodium_50_Mg_Delayed_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "855906",
+                    "display": "diclofenac sodium 50 MG Delayed Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 2,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 3,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 14,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Diclofenac_Sodium_75_Mg_Delayed_Release_Oral_Tablet": {
+            "name": "Prescribe_Diclofenac_Sodium_75_Mg_Delayed_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "855926",
+                    "display": "diclofenac sodium 75 MG Delayed Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 2,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 2,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 14,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Diclofenac_Sodium_1_Percent_Topical_Gel": {
+            "name": "Prescribe_Diclofenac_Sodium_1_Percent_Topical_Gel",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "nsaid",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "855633",
+                    "display": "diclofenac sodium 0.01 MG/MG Topical Gel"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": true,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 4,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        }
+    }
+}

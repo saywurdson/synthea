@@ -1,0 +1,7 @@
+age,gender,state,Prescribe_Escitalopram_5_Mg_Oral_Tablet,Prescribe_Escitalopram_10_Mg_Oral_Tablet,Prescribe_Escitalopram_20_Mg_Oral_Tablet
+0-17,M,*,0.30,0.50,0.20
+0-17,F,*,0.30,0.50,0.20
+18-64,M,*,0.10,0.45,0.45
+18-64,F,*,0.10,0.45,0.45
+65-103,M,*,0.20,0.50,0.30
+65-103,F,*,0.20,0.50,0.30
