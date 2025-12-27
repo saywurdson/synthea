@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -200,6 +201,7 @@ public class FhirR4 {
       Config.get("exporter.fhir.us_core_version", "5.0.1");
 
   private static Table<String, String, String> US_CORE_MAPPING;
+  private static final Table<String, String, String> US_CORE_3_MAPPING;
   private static final Table<String, String, String> US_CORE_4_MAPPING;
   private static final Table<String, String, String> US_CORE_5_MAPPING;
   private static final Table<String, String, String> US_CORE_6_MAPPING;
@@ -263,12 +265,15 @@ public class FhirR4 {
     Map<String, Table<String, String, String>> usCoreMappings =
         loadMappingWithVersions("us_core_mapping.csv", "3", "4", "5", "6", "7");
 
+    US_CORE_3_MAPPING = usCoreMappings.get("3");
     US_CORE_4_MAPPING = usCoreMappings.get("4");
     US_CORE_5_MAPPING = usCoreMappings.get("5");
     US_CORE_6_MAPPING = usCoreMappings.get("6");
     US_CORE_7_MAPPING = usCoreMappings.get("7");
 
-    if (US_CORE_VERSION.startsWith("4")) {
+    if (US_CORE_VERSION.startsWith("3")) {
+      US_CORE_MAPPING = US_CORE_3_MAPPING;
+    } else if (US_CORE_VERSION.startsWith("4")) {
       US_CORE_MAPPING = US_CORE_4_MAPPING;
     } else if (US_CORE_VERSION.startsWith("5")) {
       US_CORE_MAPPING = US_CORE_5_MAPPING;
@@ -575,7 +580,7 @@ public class FhirR4 {
 
       if (shouldExport(Immunization.class)) {
         for (HealthRecord.Entry immunization : encounter.immunizations) {
-          immunization(personEntry, bundle, encounterEntry, immunization);
+          immunization(person, personEntry, bundle, encounterEntry, immunization);
         }
       }
 
@@ -604,7 +609,8 @@ public class FhirR4 {
         }
       }
 
-      if (USE_US_CORE_IG && shouldExport(DiagnosticReport.class)) {
+      // Always export clinical notes (not just when US Core is enabled)
+      if (shouldExport(DiagnosticReport.class)) {
         String clinicalNoteText = ClinicalNoteExporter.export(person, encounter);
         boolean lastNote =
             (encounter == person.record.encounters.get(person.record.encounters.size() - 1));
@@ -627,6 +633,10 @@ public class FhirR4 {
       // Add Provenance to the Bundle
       provenance(bundle, person, stopTime);
     }
+
+    // Export Person-level attribute observations (risk scores, behavioral, pregnancy, cause of death)
+    personAttributeObservations(person, personEntry, bundle, stopTime);
+
     return bundle;
   }
 
@@ -1540,6 +1550,19 @@ public class FhirR4 {
     coverage.setType(new CodeableConcept().setText(payer.getName()));
     coverage.setBeneficiary(new Reference(personEntry.getFullUrl()));
     coverage.addPayor(new Reference().setDisplay(payer.getName()));
+
+    // Add customer utilization count as an extension
+    String personId = (String) person.attributes.get(Person.ID);
+    if (personId != null) {
+      int utilizationCount = payer.getCustomerUtilization(personId);
+      if (utilizationCount > 0) {
+        Extension utilizationExt = new Extension();
+        utilizationExt.setUrl("http://synthetichealth.github.io/synthea/utilization-count");
+        utilizationExt.setValue(new IntegerType(utilizationCount));
+        coverage.addExtension(utilizationExt);
+      }
+    }
+
     eob.addContained(coverage);
     ExplanationOfBenefit.InsuranceComponent insuranceComponent =
         new ExplanationOfBenefit.InsuranceComponent();
@@ -1587,6 +1610,13 @@ public class FhirR4 {
 
     List<ExplanationOfBenefit.ItemComponent> eobItem = new ArrayList<>();
     double totalPayment = 0;
+
+    // Build a list of all claim entries (main + items) to match with FHIR claim items
+    List<Claim.ClaimEntry> allClaimEntries = new ArrayList<>();
+    allClaimEntries.add(claim.mainEntry);
+    allClaimEntries.addAll(claim.items);
+
+    int claimEntryIndex = 0;
     // Get all the items info from the claim
     for (ItemComponent item : claimResource.getItem()) {
       ExplanationOfBenefit.ItemComponent itemComponent = new ExplanationOfBenefit.ItemComponent();
@@ -1642,11 +1672,39 @@ public class FhirR4 {
           .setDisplay(display);
       itemComponent.setLocation(location);
 
-      // Adjudication
+      // Adjudication - use actual claim cost data instead of hardcoded values
       if (item.hasNet()) {
+        // Get the corresponding claim entry costs (if available)
+        Claim.ClaimEntry itemClaimEntry = null;
+        if (claimEntryIndex < allClaimEntries.size()) {
+          itemClaimEntry = allClaimEntries.get(claimEntryIndex);
+          claimEntryIndex++;
+        }
 
-        // Assume that the patient has already paid deductible and
-        // has 20/80 coinsurance
+        // Use actual values from Claim if available, otherwise fall back to estimates
+        double coinsuranceValue = (itemClaimEntry != null)
+            ? itemClaimEntry.getCoinsurancePaid().doubleValue()
+            : 0.2 * item.getNet().getValue().doubleValue();
+        double providerPaymentValue = (itemClaimEntry != null)
+            ? itemClaimEntry.getCoveredCost().doubleValue()
+            : 0.8 * item.getNet().getValue().doubleValue();
+        double deductibleValue = (itemClaimEntry != null)
+            ? itemClaimEntry.deductiblePaidByPatient.doubleValue()
+            : 0;
+        double copayValue = (itemClaimEntry != null)
+            ? itemClaimEntry.copayPaidByPatient.doubleValue()
+            : 0;
+        double adjustmentValue = (itemClaimEntry != null)
+            ? itemClaimEntry.adjustment.doubleValue()
+            : 0;
+        double patientOopValue = (itemClaimEntry != null)
+            ? itemClaimEntry.patientOutOfPocket.doubleValue()
+            : 0;
+        double secondaryPayerValue = (itemClaimEntry != null)
+            ? itemClaimEntry.paidBySecondaryPayer.doubleValue()
+            : 0;
+
+        // Coinsurance Amount
         ExplanationOfBenefit.AdjudicationComponent coinsuranceAmount =
             new ExplanationOfBenefit.AdjudicationComponent();
         coinsuranceAmount.getCategory()
@@ -1656,9 +1714,10 @@ public class FhirR4 {
                 .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
                 .setDisplay("Line Beneficiary Coinsurance Amount"));
         coinsuranceAmount.getAmount()
-            .setValue(0.2 * item.getNet().getValue().doubleValue()) //20% coinsurance
+            .setValue(coinsuranceValue)
             .setCurrency("USD");
 
+        // Provider Payment Amount
         ExplanationOfBenefit.AdjudicationComponent lineProviderAmount =
             new ExplanationOfBenefit.AdjudicationComponent();
         lineProviderAmount.getCategory()
@@ -1668,10 +1727,10 @@ public class FhirR4 {
                 .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
                 .setDisplay("Line Provider Payment Amount"));
         lineProviderAmount.getAmount()
-            .setValue(0.8 * item.getNet().getValue().doubleValue())
+            .setValue(providerPaymentValue)
             .setCurrency("USD");
 
-        // assume the allowed and submitted amounts are the same for now
+        // Submitted Charge Amount
         ExplanationOfBenefit.AdjudicationComponent submittedAmount =
             new ExplanationOfBenefit.AdjudicationComponent();
         submittedAmount.getCategory()
@@ -1684,6 +1743,7 @@ public class FhirR4 {
             .setValue(item.getNet().getValue())
             .setCurrency("USD");
 
+        // Allowed Charge Amount (submitted minus adjustment)
         ExplanationOfBenefit.AdjudicationComponent allowedAmount =
             new ExplanationOfBenefit.AdjudicationComponent();
         allowedAmount.getCategory()
@@ -1693,9 +1753,10 @@ public class FhirR4 {
                 .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
                 .setDisplay("Line Allowed Charge Amount"));
         allowedAmount.getAmount()
-            .setValue(item.getNet().getValue())
+            .setValue(item.getNet().getValue().doubleValue() - adjustmentValue)
             .setCurrency("USD");
 
+        // Processing Indicator Code
         ExplanationOfBenefit.AdjudicationComponent indicatorCode =
             new ExplanationOfBenefit.AdjudicationComponent();
         indicatorCode.getCategory()
@@ -1705,7 +1766,7 @@ public class FhirR4 {
                 .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
                 .setDisplay("Line Processing Indicator Code"));
 
-        // assume deductible is 0
+        // Deductible Amount
         ExplanationOfBenefit.AdjudicationComponent deductibleAmount =
             new ExplanationOfBenefit.AdjudicationComponent();
         deductibleAmount.getCategory()
@@ -1715,7 +1776,33 @@ public class FhirR4 {
                 .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
                 .setDisplay("Line Beneficiary Part B Deductible Amount"));
         deductibleAmount.getAmount()
-            .setValue(0)
+            .setValue(deductibleValue)
+            .setCurrency("USD");
+
+        // Copay Amount
+        ExplanationOfBenefit.AdjudicationComponent copayAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        copayAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("copay")
+                .setSystem("http://terminology.hl7.org/CodeSystem/adjudication")
+                .setDisplay("Copay Amount"));
+        copayAmount.getAmount()
+            .setValue(copayValue)
+            .setCurrency("USD");
+
+        // Patient Out-of-Pocket Amount
+        ExplanationOfBenefit.AdjudicationComponent patientOopAmount =
+            new ExplanationOfBenefit.AdjudicationComponent();
+        patientOopAmount.getCategory()
+            .getCoding()
+            .add(new Coding()
+                .setCode("https://bluebutton.cms.gov/resources/variables/line_bene_prmry_pyr_pd_amt")
+                .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                .setDisplay("Line Beneficiary Primary Payer Paid Amount"));
+        patientOopAmount.getAmount()
+            .setValue(patientOopValue)
             .setCurrency("USD");
 
         List<ExplanationOfBenefit.AdjudicationComponent> adjudicationComponents = new ArrayList<>();
@@ -1724,11 +1811,29 @@ public class FhirR4 {
         adjudicationComponents.add(submittedAmount);
         adjudicationComponents.add(allowedAmount);
         adjudicationComponents.add(deductibleAmount);
+        adjudicationComponents.add(copayAmount);
+        adjudicationComponents.add(patientOopAmount);
         adjudicationComponents.add(indicatorCode);
+
+        // Add secondary payer amount if present
+        if (secondaryPayerValue > 0) {
+          ExplanationOfBenefit.AdjudicationComponent secondaryPayerAmount =
+              new ExplanationOfBenefit.AdjudicationComponent();
+          secondaryPayerAmount.getCategory()
+              .getCoding()
+              .add(new Coding()
+                  .setCode("https://bluebutton.cms.gov/resources/variables/line_bene_prmry_pyr_pd_amt")
+                  .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+                  .setDisplay("Line Primary Payer (if not Medicare) Paid Amount"));
+          secondaryPayerAmount.getAmount()
+              .setValue(secondaryPayerValue)
+              .setCurrency("USD");
+          adjudicationComponents.add(secondaryPayerAmount);
+        }
 
         itemComponent.setAdjudication(adjudicationComponents);
         // the total payment is what the insurance ends up paying
-        totalPayment += 0.8 * item.getNet().getValue().doubleValue();
+        totalPayment += providerPaymentValue;
       }
       eobItem.add(itemComponent);
     }
@@ -1744,6 +1849,75 @@ public class FhirR4 {
         .setCurrency("USD");
     eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
         .setAmount(payment));
+
+    // Add total-level cost breakdown using actual claim totals
+    // Copay total
+    TotalComponent copayTotal = eob.addTotal();
+    Money copayMoney = new Money();
+    copayMoney.setCurrency("USD");
+    copayMoney.setValue(claim.getTotalCopayPaid());
+    copayTotal.setAmount(copayMoney);
+    copayTotal.setCategory(new CodeableConcept().addCoding(new Coding()
+        .setSystem("http://terminology.hl7.org/CodeSystem/adjudication")
+        .setCode("copay")
+        .setDisplay("Copay")));
+
+    // Deductible total
+    TotalComponent deductibleTotal = eob.addTotal();
+    Money deductibleMoney = new Money();
+    deductibleMoney.setCurrency("USD");
+    deductibleMoney.setValue(claim.getTotalDeductiblePaid());
+    deductibleTotal.setAmount(deductibleMoney);
+    deductibleTotal.setCategory(new CodeableConcept().addCoding(new Coding()
+        .setSystem("http://terminology.hl7.org/CodeSystem/adjudication")
+        .setCode("deductible")
+        .setDisplay("Deductible")));
+
+    // Coinsurance total (patient portion)
+    TotalComponent coinsuranceTotal = eob.addTotal();
+    Money coinsuranceMoney = new Money();
+    coinsuranceMoney.setCurrency("USD");
+    coinsuranceMoney.setValue(claim.getTotalCoinsurancePaid());
+    coinsuranceTotal.setAmount(coinsuranceMoney);
+    coinsuranceTotal.setCategory(new CodeableConcept().addCoding(new Coding()
+        .setSystem("http://terminology.hl7.org/CodeSystem/adjudication")
+        .setCode("coinsurance")
+        .setDisplay("Coinsurance")));
+
+    // Patient total cost
+    TotalComponent patientTotal = eob.addTotal();
+    Money patientMoney = new Money();
+    patientMoney.setCurrency("USD");
+    patientMoney.setValue(claim.getTotalPatientCost());
+    patientTotal.setAmount(patientMoney);
+    patientTotal.setCategory(new CodeableConcept().addCoding(new Coding()
+        .setSystem("http://terminology.hl7.org/CodeSystem/adjudication")
+        .setCode("benefit")
+        .setDisplay("Patient Total Cost")));
+
+    // Payer benefit (what insurance covered)
+    TotalComponent benefitTotal = eob.addTotal();
+    Money benefitMoney = new Money();
+    benefitMoney.setCurrency("USD");
+    benefitMoney.setValue(claim.getTotalCoveredCost());
+    benefitTotal.setAmount(benefitMoney);
+    benefitTotal.setCategory(new CodeableConcept().addCoding(new Coding()
+        .setSystem("http://terminology.hl7.org/CodeSystem/adjudication")
+        .setCode("eligible")
+        .setDisplay("Payer Covered Amount")));
+
+    // Secondary payer total (if any)
+    if (claim.getTotalPaidBySecondaryPayer().compareTo(Claim.ZERO_CENTS) > 0) {
+      TotalComponent secondaryTotal = eob.addTotal();
+      Money secondaryMoney = new Money();
+      secondaryMoney.setCurrency("USD");
+      secondaryMoney.setValue(claim.getTotalPaidBySecondaryPayer());
+      secondaryTotal.setAmount(secondaryMoney);
+      secondaryTotal.setCategory(new CodeableConcept().addCoding(new Coding()
+          .setSystem("https://bluebutton.cms.gov/resources/codesystem/adjudication")
+          .setCode("prpayamt")
+          .setDisplay("Secondary Payer Amount")));
+    }
 
     String uuid = ExportHelper.buildUUID(person, claim.mainEntry.entry.start,
         "ExplanationOfBenefit for Claim" + claim.uuid);
@@ -1787,8 +1961,15 @@ public class FhirR4 {
     conditionResource.setSubject(new Reference(personEntry.getFullUrl()));
     conditionResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
 
-    Code code = condition.codes.get(0);
-    conditionResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
+    // Export ALL codes, not just the first one
+    CodeableConcept conditionCode = new CodeableConcept();
+    for (Code code : condition.codes) {
+      conditionCode.addCoding(new Coding()
+          .setSystem(SNOMED_URI)
+          .setCode(code.code)
+          .setDisplay(code.display));
+    }
+    conditionResource.setCode(conditionCode);
 
     CodeableConcept verification = new CodeableConcept();
     verification.getCodingFirstRep()
@@ -2040,13 +2221,13 @@ public class FhirR4 {
             case "exam":
               // this one is a little nebulous -- are all exams also clinical tests?
               meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-test");
-
-            observationResource.addCategory().addCoding().setCode("clinical-test")
-                .setSystem("http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category")
-                .setDisplay("Clinical Test");
-            break;
-          default:
-            // do nothing
+              observationResource.addCategory().addCoding().setCode("clinical-test")
+                  .setSystem("http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category")
+                  .setDisplay("Clinical Test");
+              break;
+            default:
+              // do nothing
+          }
         }
       }
 
@@ -2165,8 +2346,14 @@ public class FhirR4 {
       procedureResource.setLocation(encounterResource.getLocationFirstRep().getLocation());
     }
 
-    Code code = procedure.codes.get(0);
-    CodeableConcept procCode = mapCodeToCodeableConcept(code, SNOMED_URI);
+    // Export ALL codes, not just the first one
+    CodeableConcept procCode = new CodeableConcept();
+    for (Code code : procedure.codes) {
+      procCode.addCoding(new Coding()
+          .setSystem(SNOMED_URI)
+          .setCode(code.code)
+          .setDisplay(code.display));
+    }
     procedureResource.setCode(procCode);
 
     if (procedure.stop != 0L) {
@@ -2387,8 +2574,8 @@ public class FhirR4 {
   }
 
   private static BundleEntryComponent immunization(
-          BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
-          HealthRecord.Entry immunization) {
+          Person person, BundleEntryComponent personEntry, Bundle bundle,
+          BundleEntryComponent encounterEntry, HealthRecord.Entry immunization) {
     Immunization immResource = new Immunization();
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
@@ -2414,6 +2601,44 @@ public class FhirR4 {
       org.hl7.fhir.r4.model.Encounter encounterResource =
           (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
       immResource.setLocation(encounterResource.getLocationFirstRep().getLocation());
+    }
+
+    // Check if this is a COVID-19 vaccine and add protocol information
+    String cvxCode = immunization.codes.get(0).code;
+    if (cvxCode.equals("207") || cvxCode.equals("208") || cvxCode.equals("212")) {
+      // This is a COVID-19 vaccine (Moderna=207, Pfizer=208, Janssen=212)
+      Immunization.ImmunizationProtocolAppliedComponent protocol =
+          new Immunization.ImmunizationProtocolAppliedComponent();
+      protocol.setSeries("COVID-19 Vaccination");
+      protocol.addTargetDisease(new CodeableConcept().addCoding(new Coding()
+          .setSystem(SNOMED_URI)
+          .setCode("840539006")
+          .setDisplay("Disease caused by Severe acute respiratory syndrome coronavirus 2")));
+
+      // Determine dose number based on vaccination status
+      Object vaccineStatusObj = person.attributes.get("C19_VACCINE_STATUS");
+      if (vaccineStatusObj != null) {
+        String statusName = vaccineStatusObj.toString();
+        if (statusName.equals("FIRST_SHOT")) {
+          protocol.setDoseNumber(new PositiveIntType(1));
+          // Janssen is a single-dose vaccine
+          if (cvxCode.equals("212")) {
+            protocol.setSeriesDoses(new PositiveIntType(1));
+          } else {
+            protocol.setSeriesDoses(new PositiveIntType(2));
+          }
+        } else if (statusName.equals("FULLY_VACCINATED")) {
+          // For Janssen (single dose) or second dose of Pfizer/Moderna
+          if (cvxCode.equals("212")) {
+            protocol.setDoseNumber(new PositiveIntType(1));
+            protocol.setSeriesDoses(new PositiveIntType(1));
+          } else {
+            protocol.setDoseNumber(new PositiveIntType(2));
+            protocol.setSeriesDoses(new PositiveIntType(2));
+          }
+        }
+      }
+      immResource.addProtocolApplied(protocol);
     }
 
     BundleEntryComponent immunizationEntry =
@@ -2519,6 +2744,11 @@ public class FhirR4 {
 
     if (medication.stop != 0L) {
       medicationResource.setStatus(MedicationRequestStatus.STOPPED);
+      // Export stopReason if available
+      if (medication.stopReason != null) {
+        medicationResource.setStatusReason(
+            mapCodeToCodeableConcept(medication.stopReason, SNOMED_URI));
+      }
     } else {
       medicationResource.setStatus(MedicationRequestStatus.ACTIVE);
     }
@@ -3698,7 +3928,7 @@ public class FhirR4 {
    * @param system The system identifier, such as a URI. Optional; may be null.
    * @return The converted CodeableConcept
    */
-  private static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
+  public static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
     CodeableConcept to = new CodeableConcept();
     system = system == null ? null : ExportHelper.getSystemURI(system);
     from.system = ExportHelper.getSystemURI(from.system);
@@ -3788,6 +4018,235 @@ public class FhirR4 {
       return resourceType + "/";
     } else {
       return "urn:uuid:";
+    }
+  }
+
+  /**
+   * Export Person-level attributes as FHIR Observations.
+   * These include risk scores, behavioral data, pregnancy status, and cause of death.
+   *
+   * @param person      The Person to export observations for
+   * @param personEntry The Entry for the Person
+   * @param bundle      The Bundle to add to
+   * @param stopTime    Time the simulation ended
+   */
+  private static void personAttributeObservations(Person person, BundleEntryComponent personEntry,
+      Bundle bundle, long stopTime) {
+
+    if (!shouldExport(org.hl7.fhir.r4.model.Observation.class)) {
+      return;
+    }
+
+    // Risk Score Observations
+    addRiskScoreObservation(person, personEntry, bundle, stopTime,
+        "ascvd_risk", "79423-0", "Cardiovascular disease 10Y risk [Likelihood] ACC-AHA Pooled Cohort");
+    addRiskScoreObservation(person, personEntry, bundle, stopTime,
+        "framingham_risk", "44261-6", "Framingham cardiovascular disease risk score");
+    addRiskScoreObservation(person, personEntry, bundle, stopTime,
+        "cardio_risk", "30522-7", "Risk of cardiovascular disease");
+    addRiskScoreObservation(person, personEntry, bundle, stopTime,
+        "stroke_risk", "72091-2", "Stroke risk score");
+    addRiskScoreObservation(person, personEntry, bundle, stopTime,
+        "mi_risk", "88636-6", "Myocardial infarction risk score");
+    addRiskScoreObservation(person, personEntry, bundle, stopTime,
+        "ihd_risk", "88637-4", "Ischemic heart disease risk score");
+    addRiskScoreObservation(person, personEntry, bundle, stopTime,
+        "atrial_fibrillation_risk", "88638-2", "Atrial fibrillation risk score");
+
+    // Behavioral Observations
+    // Smoking status
+    Boolean smoker = (Boolean) person.attributes.get(Person.SMOKER);
+    if (smoker != null) {
+      org.hl7.fhir.r4.model.Observation smokingObs = new org.hl7.fhir.r4.model.Observation();
+      smokingObs.setStatus(ObservationStatus.FINAL);
+      smokingObs.setSubject(new Reference(personEntry.getFullUrl()));
+      smokingObs.setCode(mapCodeToCodeableConcept(
+          new Code(LOINC_URI, "72166-2", "Tobacco smoking status"), LOINC_URI));
+      smokingObs.addCategory().addCoding()
+          .setCode("social-history")
+          .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+          .setDisplay("Social History");
+      // SNOMED codes for smoking status
+      if (smoker) {
+        smokingObs.setValue(mapCodeToCodeableConcept(
+            new Code(SNOMED_URI, "449868002", "Current every day smoker"), SNOMED_URI));
+      } else {
+        smokingObs.setValue(mapCodeToCodeableConcept(
+            new Code(SNOMED_URI, "8392000", "Non-smoker"), SNOMED_URI));
+      }
+      smokingObs.setEffective(convertFhirDateTime(stopTime, true));
+      smokingObs.setIssued(new Date(stopTime));
+      String obsUUID = ExportHelper.buildUUID(person, stopTime, "Smoking Status Observation");
+      newEntry(bundle, smokingObs, obsUUID);
+    }
+
+    // Alcohol use
+    Boolean alcoholic = (Boolean) person.attributes.get(Person.ALCOHOLIC);
+    if (alcoholic != null) {
+      org.hl7.fhir.r4.model.Observation alcoholObs = new org.hl7.fhir.r4.model.Observation();
+      alcoholObs.setStatus(ObservationStatus.FINAL);
+      alcoholObs.setSubject(new Reference(personEntry.getFullUrl()));
+      alcoholObs.setCode(mapCodeToCodeableConcept(
+          new Code(LOINC_URI, "68518-0", "How often do you have a drink containing alcohol"), LOINC_URI));
+      alcoholObs.addCategory().addCoding()
+          .setCode("social-history")
+          .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+          .setDisplay("Social History");
+      if (alcoholic) {
+        alcoholObs.setValue(mapCodeToCodeableConcept(
+            new Code(SNOMED_URI, "160573003", "Alcohol abuse"), SNOMED_URI));
+      } else {
+        alcoholObs.setValue(mapCodeToCodeableConcept(
+            new Code(SNOMED_URI, "105542008", "Non-drinker of alcohol"), SNOMED_URI));
+      }
+      alcoholObs.setEffective(convertFhirDateTime(stopTime, true));
+      alcoholObs.setIssued(new Date(stopTime));
+      String obsUUID = ExportHelper.buildUUID(person, stopTime, "Alcohol Use Observation");
+      newEntry(bundle, alcoholObs, obsUUID);
+    }
+
+    // Pregnancy status
+    Boolean pregnant = (Boolean) person.attributes.get("pregnant");
+    if (pregnant != null && pregnant) {
+      org.hl7.fhir.r4.model.Observation pregnancyObs = new org.hl7.fhir.r4.model.Observation();
+      pregnancyObs.setStatus(ObservationStatus.FINAL);
+      pregnancyObs.setSubject(new Reference(personEntry.getFullUrl()));
+      pregnancyObs.setCode(mapCodeToCodeableConcept(
+          new Code(LOINC_URI, "82810-3", "Pregnancy status"), LOINC_URI));
+      pregnancyObs.addCategory().addCoding()
+          .setCode("social-history")
+          .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+          .setDisplay("Social History");
+      pregnancyObs.setValue(mapCodeToCodeableConcept(
+          new Code(SNOMED_URI, "77386006", "Pregnant"), SNOMED_URI));
+      pregnancyObs.setEffective(convertFhirDateTime(stopTime, true));
+      pregnancyObs.setIssued(new Date(stopTime));
+      String obsUUID = ExportHelper.buildUUID(person, stopTime, "Pregnancy Status Observation");
+      newEntry(bundle, pregnancyObs, obsUUID);
+    }
+
+    // Cause of death
+    Code causeOfDeath = (Code) person.attributes.get(Person.CAUSE_OF_DEATH);
+    if (causeOfDeath != null) {
+      org.hl7.fhir.r4.model.Observation codObs = new org.hl7.fhir.r4.model.Observation();
+      codObs.setStatus(ObservationStatus.FINAL);
+      codObs.setSubject(new Reference(personEntry.getFullUrl()));
+      codObs.setCode(mapCodeToCodeableConcept(
+          new Code(LOINC_URI, "79378-6", "Cause of death"), LOINC_URI));
+      codObs.addCategory().addCoding()
+          .setCode("exam")
+          .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+          .setDisplay("Exam");
+      codObs.setValue(mapCodeToCodeableConcept(causeOfDeath, SNOMED_URI));
+      Long deathTime = (Long) person.attributes.get(Person.DEATHDATE);
+      if (deathTime != null) {
+        codObs.setEffective(convertFhirDateTime(deathTime, true));
+        codObs.setIssued(new Date(deathTime));
+      } else {
+        codObs.setEffective(convertFhirDateTime(stopTime, true));
+        codObs.setIssued(new Date(stopTime));
+      }
+      String obsUUID = ExportHelper.buildUUID(person, stopTime, "Cause of Death Observation");
+      newEntry(bundle, codObs, obsUUID);
+    }
+
+    // COVID-19 Vaccination Status
+    Object c19VaccineStatus = person.attributes.get("C19_VACCINE_STATUS");
+    if (c19VaccineStatus != null) {
+      String statusName = c19VaccineStatus.toString();
+      // Only export if person has received at least one shot or is fully vaccinated
+      if (statusName.equals("FIRST_SHOT") || statusName.equals("FULLY_VACCINATED")) {
+        org.hl7.fhir.r4.model.Observation c19StatusObs = new org.hl7.fhir.r4.model.Observation();
+        c19StatusObs.setStatus(ObservationStatus.FINAL);
+        c19StatusObs.setSubject(new Reference(personEntry.getFullUrl()));
+        c19StatusObs.setCode(mapCodeToCodeableConcept(
+            new Code(LOINC_URI, "97154-4", "COVID-19 vaccination status"), LOINC_URI));
+        c19StatusObs.addCategory().addCoding()
+            .setCode("social-history")
+            .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+            .setDisplay("Social History");
+
+        // Use SNOMED codes for vaccination status
+        if (statusName.equals("FULLY_VACCINATED")) {
+          c19StatusObs.setValue(mapCodeToCodeableConcept(
+              new Code(SNOMED_URI, "1240561000000102", "Fully vaccinated against COVID-19"),
+              SNOMED_URI));
+        } else {
+          c19StatusObs.setValue(mapCodeToCodeableConcept(
+              new Code(SNOMED_URI, "1240581000000106", "Partially vaccinated against COVID-19"),
+              SNOMED_URI));
+        }
+
+        // Add the vaccine type as a component if available
+        Object c19Vaccine = person.attributes.get("C19_VACCINE");
+        if (c19Vaccine != null) {
+          org.hl7.fhir.r4.model.Observation.ObservationComponentComponent vaccineComponent =
+              new org.hl7.fhir.r4.model.Observation.ObservationComponentComponent();
+          vaccineComponent.setCode(mapCodeToCodeableConcept(
+              new Code(LOINC_URI, "30956-7", "Vaccine type"), LOINC_URI));
+          String vaccineType = c19Vaccine.toString();
+          String vaccineDisplay;
+          switch (vaccineType) {
+            case "PFIZER":
+              vaccineDisplay = "Pfizer-BioNTech COVID-19 vaccine";
+              break;
+            case "MODERNA":
+              vaccineDisplay = "Moderna COVID-19 vaccine";
+              break;
+            case "JANSSEN":
+              vaccineDisplay = "Janssen COVID-19 vaccine";
+              break;
+            default:
+              vaccineDisplay = "COVID-19 vaccine";
+          }
+          vaccineComponent.setValue(new StringType(vaccineDisplay));
+          c19StatusObs.addComponent(vaccineComponent);
+        }
+
+        c19StatusObs.setEffective(convertFhirDateTime(stopTime, true));
+        c19StatusObs.setIssued(new Date(stopTime));
+        String obsUUID = ExportHelper.buildUUID(person, stopTime, "COVID-19 Vaccination Status");
+        newEntry(bundle, c19StatusObs, obsUUID);
+      }
+    }
+  }
+
+  /**
+   * Helper method to add a risk score observation.
+   */
+  private static void addRiskScoreObservation(Person person, BundleEntryComponent personEntry,
+      Bundle bundle, long stopTime, String attributeName, String loincCode, String loincDisplay) {
+    Object riskValue = person.attributes.get(attributeName);
+    if (riskValue != null) {
+      Double risk = null;
+      if (riskValue instanceof Double) {
+        risk = (Double) riskValue;
+      } else if (riskValue instanceof Number) {
+        risk = ((Number) riskValue).doubleValue();
+      }
+
+      if (risk != null) {
+        org.hl7.fhir.r4.model.Observation riskObs = new org.hl7.fhir.r4.model.Observation();
+        riskObs.setStatus(ObservationStatus.FINAL);
+        riskObs.setSubject(new Reference(personEntry.getFullUrl()));
+        riskObs.setCode(mapCodeToCodeableConcept(
+            new Code(LOINC_URI, loincCode, loincDisplay), LOINC_URI));
+        riskObs.addCategory().addCoding()
+            .setCode("exam")
+            .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+            .setDisplay("Exam");
+        // Risk is typically a probability (0-1), convert to percentage for display
+        Quantity riskQuantity = new Quantity();
+        riskQuantity.setValue(risk * 100);
+        riskQuantity.setUnit("%");
+        riskQuantity.setSystem(UNITSOFMEASURE_URI);
+        riskQuantity.setCode("%");
+        riskObs.setValue(riskQuantity);
+        riskObs.setEffective(convertFhirDateTime(stopTime, true));
+        riskObs.setIssued(new Date(stopTime));
+        String obsUUID = ExportHelper.buildUUID(person, stopTime, attributeName + " Observation");
+        newEntry(bundle, riskObs, obsUUID);
+      }
     }
   }
 }
