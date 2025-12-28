@@ -307,7 +307,7 @@
     "end re_evaluation_medication": {
       "type": "MedicationEnd",
       "direct_transition": "MDD Medication Order",
-      "referenced_by_attribute": "ssri"
+      "referenced_by_attribute": "SSRI"
     },
     "MDD Episode": {
       "type": "ConditionOnset",
@@ -435,7 +435,7 @@
           "transition": "end re_evaluation_medication",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "ssri",
+            "attribute": "SSRI",
             "operator": "is not nil"
           }
         },
@@ -443,7 +443,7 @@
           "transition": "MDD Medication Order",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "ssri",
+            "attribute": "SSRI",
             "operator": "is nil"
           }
         }
@@ -530,16 +530,13 @@
       ]
     },
     "MDD Medication Order": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 310385,
-          "display": "FLUoxetine 20 MG Oral Capsule"
-        }
+      "type": "CallSubmodule",
+      "submodule": "medications/antidepressant",
+      "remarks": [
+        "Uses the antidepressant submodule for population-based medication selection.",
+        "Includes sertraline, bupropion, duloxetine, escitalopram, venlafaxine,",
+        "citalopram, fluoxetine, and paroxetine based on Medicare Part D data."
       ],
-      "assign_to_attribute": "ssri",
-      "reason": "mdd",
       "distributed_transition": [
         {
           "transition": "end_Psych_encounter",
@@ -549,20 +546,7 @@
           "transition": "MDD Chronic Pain Med",
           "distribution": 0.5
         }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 60,
-          "unit": "days"
-        },
-        "refills": 12
-      }
+      ]
     },
     "MDD_Careplan_Rx_ONLY": {
       "type": "CarePlanStart",
@@ -578,7 +562,7 @@
           "transition": "end re_evaluation_medication",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "ssri",
+            "attribute": "SSRI",
             "operator": "is not nil"
           }
         },
@@ -586,7 +570,7 @@
           "transition": "MDD Medication Order",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "ssri",
+            "attribute": "SSRI",
             "operator": "is nil"
           }
         }

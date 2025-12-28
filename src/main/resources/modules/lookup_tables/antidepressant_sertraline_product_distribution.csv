@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Sertraline_25_Mg_Oral_Tablet,Prescribe_Sertraline_50_Mg_Oral_Tablet,Prescribe_Sertraline_100_Mg_Oral_Tablet
-0-17,M,*,0.40,0.45,0.15
-0-17,F,*,0.40,0.45,0.15
-18-64,M,*,0.15,0.45,0.40
-18-64,F,*,0.15,0.45,0.40
-65-103,M,*,0.20,0.50,0.30
-65-103,F,*,0.20,0.50,0.30
+age,gender,Prescribe_Sertraline_25_Mg_Oral_Tablet,Prescribe_Sertraline_50_Mg_Oral_Tablet,Prescribe_Sertraline_100_Mg_Oral_Tablet
+0-17,M,0.40,0.45,0.15
+0-17,F,0.40,0.45,0.15
+18-64,M,0.15,0.45,0.40
+18-64,F,0.15,0.45,0.40
+65-103,M,0.20,0.50,0.30
+65-103,F,0.20,0.50,0.30

@@ -19,7 +19,7 @@
         "",
         "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
         "All medications prescribed in this module are assigned to the attribute",
-        "'antidepressant'.",
+        "'SSRI'.",
         "",
         "Data sources:",
         "  - CMS Medicare Part D data (2022)",
@@ -33,7 +33,7 @@
                 {
                     "condition": {
                         "condition_type": "Attribute",
-                        "attribute": "antidepressant",
+                        "attribute": "SSRI",
                         "operator": "is nil"
                     },
                     "transition": "Prescribe_Ingredient"
@@ -49,8 +49,9 @@
         "Prescribe_Ingredient": {
             "name": "Prescribe_Ingredient",
             "remarks": [
-                "Top 4 antidepressants representing ~59% of prescriptions:",
-                "Sertraline 22%, Escitalopram 14%, Duloxetine 16%, Fluoxetine 7%"
+                "All 8 antidepressants based on Medicare Part D data (2022):",
+                "Sertraline 22%, Bupropion 17%, Duloxetine 16%, Escitalopram 14%,",
+                "Venlafaxine 10%, Citalopram 10%, Fluoxetine 7%, Paroxetine 6%"
             ],
             "type": "Simple",
             "lookup_table_transition": [
@@ -60,7 +61,7 @@
                     "lookup_table_name": "antidepressant_ingredient_distribution.csv"
                 },
                 {
-                    "transition": "Prescribe_Escitalopram",
+                    "transition": "Prescribe_Bupropion",
                     "default_probability": "0",
                     "lookup_table_name": "antidepressant_ingredient_distribution.csv"
                 },
@@ -70,7 +71,27 @@
                     "lookup_table_name": "antidepressant_ingredient_distribution.csv"
                 },
                 {
+                    "transition": "Prescribe_Escitalopram",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Venlafaxine",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Citalopram",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_ingredient_distribution.csv"
+                },
+                {
                     "transition": "Prescribe_Fluoxetine",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Paroxetine",
                     "default_probability": "0",
                     "lookup_table_name": "antidepressant_ingredient_distribution.csv"
                 }
@@ -163,7 +184,7 @@
         "Prescribe_Sertraline_25_Mg_Oral_Tablet": {
             "name": "Prescribe_Sertraline_25_Mg_Oral_Tablet",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -191,7 +212,7 @@
         "Prescribe_Sertraline_50_Mg_Oral_Tablet": {
             "name": "Prescribe_Sertraline_50_Mg_Oral_Tablet",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -219,7 +240,7 @@
         "Prescribe_Sertraline_100_Mg_Oral_Tablet": {
             "name": "Prescribe_Sertraline_100_Mg_Oral_Tablet",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -247,7 +268,7 @@
         "Prescribe_Escitalopram_5_Mg_Oral_Tablet": {
             "name": "Prescribe_Escitalopram_5_Mg_Oral_Tablet",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -275,7 +296,7 @@
         "Prescribe_Escitalopram_10_Mg_Oral_Tablet": {
             "name": "Prescribe_Escitalopram_10_Mg_Oral_Tablet",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -303,7 +324,7 @@
         "Prescribe_Escitalopram_20_Mg_Oral_Tablet": {
             "name": "Prescribe_Escitalopram_20_Mg_Oral_Tablet",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -331,7 +352,7 @@
         "Prescribe_Duloxetine_20_Mg_Delayed_Release_Oral_Capsule": {
             "name": "Prescribe_Duloxetine_20_Mg_Delayed_Release_Oral_Capsule",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -359,7 +380,7 @@
         "Prescribe_Duloxetine_30_Mg_Delayed_Release_Oral_Capsule": {
             "name": "Prescribe_Duloxetine_30_Mg_Delayed_Release_Oral_Capsule",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -387,7 +408,7 @@
         "Prescribe_Duloxetine_60_Mg_Delayed_Release_Oral_Capsule": {
             "name": "Prescribe_Duloxetine_60_Mg_Delayed_Release_Oral_Capsule",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -415,7 +436,7 @@
         "Prescribe_Fluoxetine_10_Mg_Oral_Capsule": {
             "name": "Prescribe_Fluoxetine_10_Mg_Oral_Capsule",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -443,7 +464,7 @@
         "Prescribe_Fluoxetine_20_Mg_Oral_Capsule": {
             "name": "Prescribe_Fluoxetine_20_Mg_Oral_Capsule",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
@@ -471,12 +492,432 @@
         "Prescribe_Fluoxetine_40_Mg_Oral_Capsule": {
             "name": "Prescribe_Fluoxetine_40_Mg_Oral_Capsule",
             "type": "MedicationOrder",
-            "assign_to_attribute": "antidepressant",
+            "assign_to_attribute": "SSRI",
             "codes": [
                 {
                     "system": "RxNorm",
                     "code": "313989",
                     "display": "fluoxetine 40 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Bupropion": {
+            "name": "Prescribe_Bupropion",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Bupropion_150_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_bupropion_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Bupropion_300_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_bupropion_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Bupropion_100_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_bupropion_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Bupropion_150_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_Bupropion_150_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "993541",
+                    "display": "24 HR bupropion hydrochloride 150 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Bupropion_300_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_Bupropion_300_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "993557",
+                    "display": "24 HR bupropion hydrochloride 300 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Bupropion_100_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_Bupropion_100_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "993503",
+                    "display": "12 HR bupropion hydrochloride 100 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Venlafaxine": {
+            "name": "Prescribe_Venlafaxine",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Venlafaxine_75_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_venlafaxine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Venlafaxine_150_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_venlafaxine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Venlafaxine_37_5_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_venlafaxine_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Venlafaxine_75_Mg_Extended_Release_Oral_Capsule": {
+            "name": "Prescribe_Venlafaxine_75_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "313585",
+                    "display": "24 HR venlafaxine 75 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Venlafaxine_150_Mg_Extended_Release_Oral_Capsule": {
+            "name": "Prescribe_Venlafaxine_150_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "313581",
+                    "display": "24 HR venlafaxine 150 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Venlafaxine_37_5_Mg_Extended_Release_Oral_Capsule": {
+            "name": "Prescribe_Venlafaxine_37_5_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "313583",
+                    "display": "24 HR venlafaxine 37.5 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Citalopram": {
+            "name": "Prescribe_Citalopram",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Citalopram_20_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_citalopram_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Citalopram_10_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_citalopram_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Citalopram_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_citalopram_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Citalopram_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Citalopram_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200371",
+                    "display": "citalopram 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Citalopram_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Citalopram_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "283672",
+                    "display": "citalopram 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Citalopram_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Citalopram_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "309314",
+                    "display": "citalopram 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Paroxetine": {
+            "name": "Prescribe_Paroxetine",
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Paroxetine_20_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "antidepressant_paroxetine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Paroxetine_10_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_paroxetine_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Paroxetine_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "antidepressant_paroxetine_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Paroxetine_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Paroxetine_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1738495",
+                    "display": "paroxetine hydrochloride 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Paroxetine_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Paroxetine_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1738483",
+                    "display": "paroxetine hydrochloride 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 5,
+                "as_needed": false,
+                "dosage": {
+                    "amount": 1,
+                    "frequency": 1,
+                    "period": 1,
+                    "unit": "days"
+                },
+                "duration": {
+                    "quantity": 30,
+                    "unit": "days"
+                }
+            },
+            "direct_transition": "Terminal",
+            "chronic": true
+        },
+        "Prescribe_Paroxetine_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Paroxetine_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "SSRI",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1738511",
+                    "display": "paroxetine hydrochloride 40 MG Oral Tablet"
                 }
             ],
             "prescription": {

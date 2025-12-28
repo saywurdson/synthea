@@ -471,17 +471,14 @@
       ]
     },
     "PTSD Medication Order": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 312938,
-          "display": "Sertraline 100 MG Oral Tablet",
-          "value_set": ""
-        }
+      "type": "CallSubmodule",
+      "submodule": "medications/antidepressant",
+      "remarks": [
+        "Uses the antidepressant submodule for population-based medication selection.",
+        "Includes sertraline, bupropion, duloxetine, escitalopram, venlafaxine,",
+        "citalopram, fluoxetine, and paroxetine based on Medicare Part D data.",
+        "Most common Rx ordered tied to mental health conditions like PTSD are SSRIs (per VA CDW data analysis)"
       ],
-      "assign_to_attribute": "SSRI",
-      "reason": "ptsd",
       "distributed_transition": [
         {
           "transition": "Pain_Vital_4",
@@ -491,10 +488,6 @@
           "transition": "PTSD Chronic Pain Med",
           "distribution": 0.5
         }
-      ],
-      "remarks": [
-        "most common Rx ordered tied to mental health conditions like PTSD are SSRIs (per VA CDW data analysis)",
-        ""
       ]
     },
     "end re_evaluation_medication": {
