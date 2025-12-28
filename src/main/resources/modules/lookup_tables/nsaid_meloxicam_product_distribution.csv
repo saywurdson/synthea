@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Meloxicam_7_5_Mg_Oral_Tablet,Prescribe_Meloxicam_15_Mg_Oral_Tablet
-0-17,M,*,0.70,0.30
-0-17,F,*,0.70,0.30
-18-64,M,*,0.40,0.60
-18-64,F,*,0.40,0.60
-65-103,M,*,0.55,0.45
-65-103,F,*,0.55,0.45
+age,gender,Prescribe_Meloxicam_7_5_Mg_Oral_Tablet,Prescribe_Meloxicam_15_Mg_Oral_Tablet
+0-17,M,0.70,0.30
+0-17,F,0.70,0.30
+18-64,M,0.40,0.60
+18-64,F,0.40,0.60
+65-103,M,0.55,0.45
+65-103,F,0.55,0.45

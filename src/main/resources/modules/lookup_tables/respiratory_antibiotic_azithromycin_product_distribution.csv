@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Azithromycin_250_Mg_Oral_Tablet_Zpack,Prescribe_Azithromycin_500_Mg_Oral_Tablet
-0-17,M,*,0.80,0.20
-0-17,F,*,0.80,0.20
-18-64,M,*,0.70,0.30
-18-64,F,*,0.70,0.30
-65-103,M,*,0.65,0.35
-65-103,F,*,0.65,0.35
+age,gender,Prescribe_Azithromycin_250_Mg_Oral_Tablet_Zpack,Prescribe_Azithromycin_500_Mg_Oral_Tablet
+0-17,M,0.80,0.20
+0-17,F,0.80,0.20
+18-64,M,0.70,0.30
+18-64,F,0.70,0.30
+65-103,M,0.65,0.35
+65-103,F,0.65,0.35

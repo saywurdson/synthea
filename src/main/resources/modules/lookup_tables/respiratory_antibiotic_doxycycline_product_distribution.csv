@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Doxycycline_Hyclate_100_Mg_Oral_Capsule,Prescribe_Doxycycline_Monohydrate_100_Mg_Oral_Capsule
-0-17,M,*,0.50,0.50
-0-17,F,*,0.50,0.50
-18-64,M,*,0.55,0.45
-18-64,F,*,0.55,0.45
-65-103,M,*,0.50,0.50
-65-103,F,*,0.50,0.50
+age,gender,Prescribe_Doxycycline_Hyclate_100_Mg_Oral_Capsule,Prescribe_Doxycycline_Monohydrate_100_Mg_Oral_Capsule
+0-17,M,0.50,0.50
+0-17,F,0.50,0.50
+18-64,M,0.55,0.45
+18-64,F,0.55,0.45
+65-103,M,0.50,0.50
+65-103,F,0.50,0.50

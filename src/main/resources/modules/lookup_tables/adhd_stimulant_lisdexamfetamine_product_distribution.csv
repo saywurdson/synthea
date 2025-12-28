@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Lisdexamfetamine_30_Mg_Oral_Capsule,Prescribe_Lisdexamfetamine_50_Mg_Oral_Capsule,Prescribe_Lisdexamfetamine_70_Mg_Oral_Capsule
-0-17,M,*,0.45,0.35,0.20
-0-17,F,*,0.45,0.35,0.20
-18-64,M,*,0.25,0.40,0.35
-18-64,F,*,0.25,0.40,0.35
-65-103,M,*,0.40,0.40,0.20
-65-103,F,*,0.40,0.40,0.20
+age,gender,Prescribe_Lisdexamfetamine_30_Mg_Oral_Capsule,Prescribe_Lisdexamfetamine_50_Mg_Oral_Capsule,Prescribe_Lisdexamfetamine_70_Mg_Oral_Capsule
+0-17,M,0.45,0.35,0.20
+0-17,F,0.45,0.35,0.20
+18-64,M,0.25,0.40,0.35
+18-64,F,0.25,0.40,0.35
+65-103,M,0.40,0.40,0.20
+65-103,F,0.40,0.40,0.20

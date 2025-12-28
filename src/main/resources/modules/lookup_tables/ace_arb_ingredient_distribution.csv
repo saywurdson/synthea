@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Amlodipine_Benazepril,Prescribe_Benazepril,Prescribe_Benazepril_Hydrochlorothiazide,Prescribe_Enalapril,Prescribe_Hydrochlorothiazide_Lisinopril,Prescribe_Hydrochlorothiazide_Losartan,Prescribe_Hydrochlorothiazide_Valsartan,Prescribe_Irbesartan,Prescribe_Lisinopril,Prescribe_Losartan,Prescribe_Quinapril,Prescribe_Ramipril,Prescribe_Sacubitril_Valsartan,Prescribe_Telmisartan,Prescribe_Valsartan
-0-17,M,*,0.00,0.00,0.00,0.05,0.00,0.00,0.00,0.02,0.50,0.38,0.00,0.01,0.00,0.01,0.03
-0-17,F,*,0.00,0.00,0.00,0.05,0.00,0.00,0.00,0.02,0.50,0.38,0.00,0.01,0.00,0.01,0.03
-18-64,M,*,0.00,0.00,0.00,0.02,0.00,0.00,0.00,0.03,0.46,0.42,0.00,0.01,0.00,0.01,0.05
-18-64,F,*,0.00,0.00,0.00,0.02,0.00,0.00,0.00,0.03,0.46,0.42,0.00,0.01,0.00,0.01,0.05
-65-103,M,*,0.00,0.00,0.00,0.02,0.00,0.00,0.00,0.03,0.46,0.43,0.00,0.02,0.00,0.01,0.03
-65-103,F,*,0.00,0.00,0.00,0.02,0.00,0.00,0.00,0.03,0.46,0.43,0.00,0.02,0.00,0.01,0.03
+age,gender,Prescribe_Amlodipine_Benazepril,Prescribe_Benazepril,Prescribe_Benazepril_Hydrochlorothiazide,Prescribe_Enalapril,Prescribe_Hydrochlorothiazide_Lisinopril,Prescribe_Hydrochlorothiazide_Losartan,Prescribe_Hydrochlorothiazide_Valsartan,Prescribe_Irbesartan,Prescribe_Lisinopril,Prescribe_Losartan,Prescribe_Quinapril,Prescribe_Ramipril,Prescribe_Sacubitril_Valsartan,Prescribe_Telmisartan,Prescribe_Valsartan
+0-17,M,0.00,0.00,0.00,0.05,0.00,0.00,0.00,0.02,0.50,0.38,0.00,0.01,0.00,0.01,0.03
+0-17,F,0.00,0.00,0.00,0.05,0.00,0.00,0.00,0.02,0.50,0.38,0.00,0.01,0.00,0.01,0.03
+18-64,M,0.00,0.00,0.00,0.02,0.00,0.00,0.00,0.03,0.46,0.42,0.00,0.01,0.00,0.01,0.05
+18-64,F,0.00,0.00,0.00,0.02,0.00,0.00,0.00,0.03,0.46,0.42,0.00,0.01,0.00,0.01,0.05
+65-103,M,0.00,0.00,0.00,0.02,0.00,0.00,0.00,0.03,0.46,0.43,0.00,0.02,0.00,0.01,0.03
+65-103,F,0.00,0.00,0.00,0.02,0.00,0.00,0.00,0.03,0.46,0.43,0.00,0.02,0.00,0.01,0.03

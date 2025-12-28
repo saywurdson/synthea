@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Atorvastatin,Prescribe_Ezetimibe_Simvastatin,Prescribe_Lovastatin,Prescribe_Pitavastatin,Prescribe_Pravastatin,Prescribe_Rosuvastatin,Prescribe_Simvastatin
-0-17,M,*,0.50,0.00,0.10,0.00,0.15,0.15,0.10
-0-17,F,*,0.50,0.00,0.10,0.00,0.15,0.15,0.10
-18-64,M,*,0.54,0.01,0.04,0.01,0.10,0.18,0.12
-18-64,F,*,0.54,0.01,0.04,0.01,0.10,0.18,0.12
-65-103,M,*,0.56,0.01,0.03,0.01,0.08,0.21,0.10
-65-103,F,*,0.56,0.01,0.03,0.01,0.08,0.21,0.10
+age,gender,Prescribe_Atorvastatin,Prescribe_Ezetimibe_Simvastatin,Prescribe_Lovastatin,Prescribe_Pitavastatin,Prescribe_Pravastatin,Prescribe_Rosuvastatin,Prescribe_Simvastatin
+0-17,M,0.50,0.00,0.10,0.00,0.15,0.15,0.10
+0-17,F,0.50,0.00,0.10,0.00,0.15,0.15,0.10
+18-64,M,0.54,0.01,0.04,0.01,0.10,0.18,0.12
+18-64,F,0.54,0.01,0.04,0.01,0.10,0.18,0.12
+65-103,M,0.56,0.01,0.03,0.01,0.08,0.21,0.10
+65-103,F,0.56,0.01,0.03,0.01,0.08,0.21,0.10

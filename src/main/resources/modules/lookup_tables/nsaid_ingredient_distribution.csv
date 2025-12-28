@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Ibuprofen,Prescribe_Meloxicam,Prescribe_Naproxen,Prescribe_Celecoxib,Prescribe_Diclofenac
-0-17,M,*,0.85,0.03,0.08,0.01,0.03
-0-17,F,*,0.85,0.03,0.08,0.01,0.03
-18-64,M,*,0.35,0.28,0.15,0.10,0.12
-18-64,F,*,0.35,0.28,0.15,0.10,0.12
-65-103,M,*,0.20,0.32,0.08,0.14,0.26
-65-103,F,*,0.20,0.32,0.08,0.14,0.26
+age,gender,Prescribe_Ibuprofen,Prescribe_Meloxicam,Prescribe_Naproxen,Prescribe_Celecoxib,Prescribe_Diclofenac
+0-17,M,0.85,0.03,0.08,0.01,0.03
+0-17,F,0.85,0.03,0.08,0.01,0.03
+18-64,M,0.35,0.28,0.15,0.10,0.12
+18-64,F,0.35,0.28,0.15,0.10,0.12
+65-103,M,0.20,0.32,0.08,0.14,0.26
+65-103,F,0.20,0.32,0.08,0.14,0.26

@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Levothyroxine_25_Mcg_Oral_Tablet,Prescribe_Levothyroxine_50_Mcg_Oral_Tablet,Prescribe_Levothyroxine_75_Mcg_Oral_Tablet,Prescribe_Levothyroxine_100_Mcg_Oral_Tablet,Prescribe_Levothyroxine_125_Mcg_Oral_Tablet
-0-17,M,*,0.25,0.30,0.25,0.15,0.05
-0-17,F,*,0.25,0.30,0.25,0.15,0.05
-18-64,M,*,0.12,0.26,0.20,0.30,0.12
-18-64,F,*,0.12,0.26,0.20,0.30,0.12
-65-103,M,*,0.13,0.26,0.19,0.31,0.11
-65-103,F,*,0.13,0.26,0.19,0.31,0.11
+age,gender,Prescribe_Levothyroxine_25_Mcg_Oral_Tablet,Prescribe_Levothyroxine_50_Mcg_Oral_Tablet,Prescribe_Levothyroxine_75_Mcg_Oral_Tablet,Prescribe_Levothyroxine_100_Mcg_Oral_Tablet,Prescribe_Levothyroxine_125_Mcg_Oral_Tablet
+0-17,M,0.25,0.30,0.25,0.15,0.05
+0-17,F,0.25,0.30,0.25,0.15,0.05
+18-64,M,0.12,0.26,0.20,0.30,0.12
+18-64,F,0.12,0.26,0.20,0.30,0.12
+65-103,M,0.13,0.26,0.19,0.31,0.11
+65-103,F,0.13,0.26,0.19,0.31,0.11

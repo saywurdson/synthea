@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Methylphenidate,Prescribe_Amphetamine_Mixed_Salts,Prescribe_Lisdexamfetamine
-0-17,M,*,0.45,0.35,0.20
-0-17,F,*,0.45,0.35,0.20
-18-64,M,*,0.35,0.40,0.25
-18-64,F,*,0.35,0.40,0.25
-65-103,M,*,0.50,0.30,0.20
-65-103,F,*,0.50,0.30,0.20
+age,gender,Prescribe_Methylphenidate,Prescribe_Amphetamine_Mixed_Salts,Prescribe_Lisdexamfetamine
+0-17,M,0.45,0.35,0.20
+0-17,F,0.45,0.35,0.20
+18-64,M,0.35,0.40,0.25
+18-64,F,0.35,0.40,0.25
+65-103,M,0.50,0.30,0.20
+65-103,F,0.50,0.30,0.20

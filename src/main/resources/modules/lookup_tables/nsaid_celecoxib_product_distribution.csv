@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Celecoxib_100_Mg_Oral_Capsule,Prescribe_Celecoxib_200_Mg_Oral_Capsule
-0-17,M,*,0.60,0.40
-0-17,F,*,0.60,0.40
-18-64,M,*,0.30,0.70
-18-64,F,*,0.30,0.70
-65-103,M,*,0.40,0.60
-65-103,F,*,0.40,0.60
+age,gender,Prescribe_Celecoxib_100_Mg_Oral_Capsule,Prescribe_Celecoxib_200_Mg_Oral_Capsule
+0-17,M,0.60,0.40
+0-17,F,0.60,0.40
+18-64,M,0.30,0.70
+18-64,F,0.30,0.70
+65-103,M,0.40,0.60
+65-103,F,0.40,0.60

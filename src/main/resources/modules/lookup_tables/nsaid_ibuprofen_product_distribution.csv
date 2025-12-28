@@ -1,7 +1,7 @@
-age,gender,state,Prescribe_Ibuprofen_20_Mg_Ml_Oral_Suspension,Prescribe_Ibuprofen_40_Mg_Ml_Oral_Suspension,Prescribe_Ibuprofen_100_Mg_Chewable_Tablet,Prescribe_Ibuprofen_200_Mg_Oral_Tablet,Prescribe_Ibuprofen_400_Mg_Oral_Tablet,Prescribe_Ibuprofen_600_Mg_Oral_Tablet,Prescribe_Ibuprofen_800_Mg_Oral_Tablet
-0-17,M,*,0.40,0.30,0.20,0.07,0.03,0.0,0.0
-0-17,F,*,0.40,0.30,0.20,0.07,0.03,0.0,0.0
-18-64,M,*,0.0,0.0,0.0,0.15,0.25,0.35,0.25
-18-64,F,*,0.0,0.0,0.0,0.15,0.25,0.35,0.25
-65-103,M,*,0.0,0.0,0.0,0.20,0.30,0.30,0.20
-65-103,F,*,0.0,0.0,0.0,0.20,0.30,0.30,0.20
+age,gender,Prescribe_Ibuprofen_20_Mg_Ml_Oral_Suspension,Prescribe_Ibuprofen_40_Mg_Ml_Oral_Suspension,Prescribe_Ibuprofen_100_Mg_Chewable_Tablet,Prescribe_Ibuprofen_200_Mg_Oral_Tablet,Prescribe_Ibuprofen_400_Mg_Oral_Tablet,Prescribe_Ibuprofen_600_Mg_Oral_Tablet,Prescribe_Ibuprofen_800_Mg_Oral_Tablet
+0-17,M,0.40,0.30,0.20,0.07,0.03,0.0,0.0
+0-17,F,0.40,0.30,0.20,0.07,0.03,0.0,0.0
+18-64,M,0.0,0.0,0.0,0.15,0.25,0.35,0.25
+18-64,F,0.0,0.0,0.0,0.15,0.25,0.35,0.25
+65-103,M,0.0,0.0,0.0,0.20,0.30,0.30,0.20
+65-103,F,0.0,0.0,0.0,0.20,0.30,0.30,0.20
