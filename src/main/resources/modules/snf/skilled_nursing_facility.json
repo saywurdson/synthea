@@ -97,8 +97,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "315639002",
-          "display": "Initial patient assessment (procedure)"
+          "code": "162673000",
+          "display": "General examination of patient (procedure)"
         }
       ],
       "direct_transition": "Facility_Wheelchair"

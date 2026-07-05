@@ -845,8 +845,8 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": "690701000119101",
-            "display": "Foul smelling urine (finding)"
+            "code": "278017001",
+            "display": "Malodorous urine (finding)"
           }
         },
         {

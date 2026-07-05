@@ -185,8 +185,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 182813001,
-          "display": "Emergency treatment (procedure)"
+          "code": 373110003,
+          "display": "Emergency procedure (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_3"
@@ -283,8 +283,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 182813001,
-          "display": "Emergency treatment (procedure)"
+          "code": 373110003,
+          "display": "Emergency procedure (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -767,8 +767,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "60112009",
-          "display": "Drug addiction counseling"
+          "code": "1366206007",
+          "display": "Counseling for substance dependence (procedure)"
         },
         {
           "system": "SNOMED-CT",

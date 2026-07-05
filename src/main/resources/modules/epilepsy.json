@@ -186,8 +186,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "703151001",
-          "display": "History of single seizure (situation)"
+          "code": "1290882004",
+          "display": "History of seizure (situation)"
         }
       ],
       "direct_transition": "EEG_Test"
