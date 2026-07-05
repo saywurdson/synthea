@@ -679,6 +679,13 @@
     },
     "Determine CHF": {
       "type": "Simple",
+      "remarks": [
+        "Prevalence rates from NHANES 2017-2020 and AHA Heart Disease and Stroke Statistics 2024.",
+        "Fixed overlapping age brackets (was 40-59 AND 50-79, now non-overlapping 40-59 and 60-79).",
+        "Female: 20-39: 0.2%, 40-59: 1.2%, 60-79: 4.2%, 80+: 12.0%, Never: 82.4%",
+        "Male: 20-39: 0.3%, 40-59: 2.3%, 60-79: 7.5%, 80+: 12.8%, Never: 77.1%",
+        "Racial disparities (MESA Study): Black 1.9x, Hispanic 1.5x, Asian 0.4x vs White reference."
+      ],
       "complex_transition": [
         {
           "condition": {
@@ -692,11 +699,11 @@
             },
             {
               "transition": "Age 40-59",
-              "distribution": 0.017
+              "distribution": 0.012
             },
             {
-              "transition": "Age 50-79",
-              "distribution": 0.048
+              "transition": "Age 60-79",
+              "distribution": 0.042
             },
             {
               "transition": "Age 80+",
@@ -704,7 +711,7 @@
             },
             {
               "transition": "Terminal",
-              "distribution": 0.813
+              "distribution": 0.824
             }
           ]
         },
@@ -720,11 +727,11 @@
             },
             {
               "transition": "Age 40-59",
-              "distribution": 0.012
+              "distribution": 0.023
             },
             {
-              "transition": "Age 50-79",
-              "distribution": 0.069
+              "transition": "Age 60-79",
+              "distribution": 0.075
             },
             {
               "transition": "Age 80+",
@@ -732,7 +739,7 @@
             },
             {
               "transition": "Terminal",
-              "distribution": 0.788
+              "distribution": 0.771
             }
           ]
         }
@@ -756,10 +763,14 @@
       },
       "direct_transition": "Determine Type"
     },
-    "Age 50-79": {
+    "Age 60-79": {
       "type": "Delay",
+      "remarks": [
+        "Fixed from 'Age 50-79' (which overlapped with 'Age 40-59').",
+        "Delay of 40-59 years from age guard at 20 gives onset at age 60-79."
+      ],
       "range": {
-        "low": 30,
+        "low": 40,
         "high": 59,
         "unit": "years"
       },
